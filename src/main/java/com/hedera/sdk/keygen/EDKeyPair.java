@@ -1,5 +1,6 @@
 package com.hedera.sdk.keygen;
 
+import java.security.PrivateKey;
 import java.security.Signature;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -22,7 +23,7 @@ public class EDKeyPair extends AbstractKeyPair {
         EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName(EdDSANamedCurveTable.ED_25519);
         EdDSAPrivateKeySpec privateKeySpec = new EdDSAPrivateKeySpec(seed, spec);
         this.edPrivateKey = new EdDSAPrivateKey(privateKeySpec);
-        this.privateKey = edPrivateKey.getEncoded();
+        this.privateKey = edPrivateKey.geta();
         EdDSAPublicKeySpec pubKeySpec = new EdDSAPublicKeySpec(privateKeySpec.getA(), spec);
         this.edPublicKey = new EdDSAPublicKey(pubKeySpec);
         this.publicKey = edPublicKey.getAbyte();
@@ -33,7 +34,7 @@ public class EDKeyPair extends AbstractKeyPair {
     	X509EncodedKeySpec encodedPubKey = new X509EncodedKeySpec(publicKey);
         try {
 			this.edPrivateKey = new EdDSAPrivateKey(encodedPrivKey);
-			this.privateKey = edPrivateKey.getEncoded();
+			this.privateKey = edPrivateKey.geta();
 	        this.edPublicKey = new EdDSAPublicKey(encodedPubKey);
 	        this.publicKey = edPublicKey.getAbyte();
 		} catch (InvalidKeySpecException e) {
@@ -53,8 +54,13 @@ public class EDKeyPair extends AbstractKeyPair {
 			e.printStackTrace();
 		}
     }
-    
-    @Override
+
+	@Override
+	public PrivateKey getPrivateKey() {
+		return this.edPrivateKey;
+	}
+
+	@Override
     public byte[] getPublicKey() {
         return this.edPublicKey.getAbyte();
 //        return publicKey.getEncoded();        
@@ -63,6 +69,7 @@ public class EDKeyPair extends AbstractKeyPair {
     public byte[] getPublicKeyEncoded() {
         return this.edPublicKey.getEncoded();     
     }
+
     public void setSecretKey(byte[] secretKey) {
     	PKCS8EncodedKeySpec encodedPrivKey = new PKCS8EncodedKeySpec(privateKey);
         try {

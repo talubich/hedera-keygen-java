@@ -50,10 +50,12 @@ public final class KeyGen {
 				CryptoKeyPair keyPair = new CryptoKeyPair(recoveryWords);
 				printStars();
 				System.out.println("Your recovered key pair is:");
-				System.out.print("Public key:");
+				System.out.println("Public key:");
+				System.out.println("Length of public key" + keyPair.getPublicKey().length);
 				System.out.println(keyPair.getPublicKeyEncodedHex());
-				System.out.print("Secret key:");
-				System.out.println(keyPair.getSecretKeyHex());
+				System.out.println("Secret key:");
+				System.out.println("Length of private key" + keyPair.getPrivateKey().length);
+				System.out.println(keyPair.getPrivateKeyHex());
 				printStars();
 			} catch (NoSuchAlgorithmException e) {
 				// TODO Auto-generated catch block
@@ -69,10 +71,12 @@ public final class KeyGen {
 			CryptoKeyPair keyPair = new CryptoKeyPair(seedBytes);
 			printStars();
 			System.out.println("Your key pair is:");
-			System.out.print("Public key:");
+			System.out.println("Public key:");
+			System.out.println("Length of public key: " + keyPair.getPublicKey().length);
 			System.out.println(keyPair.getPublicKeyEncodedHex());
-			System.out.print("Secret key:");
-			System.out.println(keyPair.getSecretKeyHex());
+			System.out.println("Secret key:");
+			System.out.println("Length of private key: " + keyPair.getPrivateKey().length);
+			System.out.println(keyPair.getPrivateKeyHex());
 			System.out.println("Recovery word list:");
 			System.out.println(keyPair.recoveryWordsList());
 			printStars();

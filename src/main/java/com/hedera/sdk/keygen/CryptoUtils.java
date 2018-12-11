@@ -2,6 +2,7 @@ package com.hedera.sdk.keygen;
 
 
 import java.nio.ByteBuffer;
+import java.security.DrbgParameters;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -19,7 +20,13 @@ public class CryptoUtils {
     }
 
     public static byte[] getSecureRandomData(int length){
-        SecureRandom random = new SecureRandom();
+        SecureRandom random = null;
+        try {
+            random = SecureRandom.getInstance("DRBG", DrbgParameters.instantiation(256, DrbgParameters.Capability.RESEED_ONLY, null));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
         byte[] bytes = new byte[length];
         random.nextBytes(bytes);
         return bytes;

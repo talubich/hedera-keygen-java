@@ -1,6 +1,7 @@
 package com.hedera.sdk.keygen;
 
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -50,7 +51,7 @@ public class CryptoKeyPair {
     }
     public String getPublicKeyEncodedHex() {
     	if (this.keyPair != null) {
-    		return Hex.toHexString(this.keyPair.getPublicKeyEncoded());
+    		return Hex.toHexString(this.keyPair.getPublicKey());
     	} else {
     		return "";
     	}
@@ -66,20 +67,20 @@ public class CryptoKeyPair {
 	 * gets the secret key as a byte[]
 	 * returns byte[0] if not set
 	 */
-    public byte[] getSecretKey() {
+    public PrivateKey getPrivateKey() {
     	if (this.keyPair != null) {
         	return keyPair.getPrivateKey();
     	} else {
-    		return new byte[0];
+    		return null;
     	}
     }
 	/**
 	 * gets the secret key as a String
 	 * returns "" if not set
 	 */
-    public String getSecretKeyHex() {
+    public String getPrivateKeyHex() {
     	if (this.keyPair != null) {
-        	return Hex.toHexString(this.keyPair.getPrivateKey());
+        	return Hex.toHexString(this.keyPair.getPrivateKey().getEncoded());
     	} else {
     		return "";
     	}
@@ -88,7 +89,6 @@ public class CryptoKeyPair {
     /**
      * Constructor from a key type and recoveryWords as an array of String
      * Creates or Recovers a public/private keypair from the list of words
-     * @param keyType
      * @param recoveryWords String[]
      * @throws NoSuchAlgorithmException
      */
@@ -98,7 +98,6 @@ public class CryptoKeyPair {
     /**
      * Constructor from a key type and recoveryWords as an List of String
      * Creates or Recovers a public/private keypair from the list of words
-     * @param keyType List<String>
      * @param recoveryWords
      * @throws NoSuchAlgorithmException
      */
@@ -113,7 +112,6 @@ public class CryptoKeyPair {
 		
 	/**
 	 * Constructor from a key type and seed 
-	 * @param keyType the type of key to generate
 	 * @param seed the seed to generate with
 	 */
     public CryptoKeyPair(byte[] seed) {
@@ -135,7 +133,6 @@ public class CryptoKeyPair {
     
     /** 
      * Constructs a key pair of the given key type, the seed is randomly generated
-     * @param keyType
      * @throws NoSuchAlgorithmException
      */
     public CryptoKeyPair() {
@@ -144,7 +141,6 @@ public class CryptoKeyPair {
 
     /**
      * Constructs from a known pair of public and private key
-     * @param keyType {@link HederaKey.KeyType}
      * @param publicKey {@link Byte[]}
      * @param secretKey {@link Byte[]}
      */
@@ -154,7 +150,6 @@ public class CryptoKeyPair {
     
     /**
      * Constructs from a known pair of public and private key
-     * @param keyType {@link HederaKey.KeyType}
      * @param publicKey {@link String} as a hex encoded string
      * @param secretKey {@link String} as a hex encoded string
      */
