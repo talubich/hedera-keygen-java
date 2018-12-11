@@ -28,15 +28,37 @@
 			<artifactId>eddsa</artifactId>
 			<version>0.3.0</version>
 		</dependency>
+
 		<!--<dependency>-->
 			<!--<groupId>com.madgag.spongycastle</groupId>-->
 			<!--<artifactId>core</artifactId>-->
 			<!--<version>1.58.0.0</version>-->
 		<!--</dependency>-->
+
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk15on</artifactId>
 			<version>1.60</version>
+		</dependency>
+
+		<!-- JUnit 5.x -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>5.3.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-params</artifactId>
+			<version>5.3.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>5.3.1</version>
+			<scope>test</scope>
 		</dependency>
 
 	</dependencies>

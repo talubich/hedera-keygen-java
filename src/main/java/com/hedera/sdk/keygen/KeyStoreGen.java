@@ -6,6 +6,8 @@ import java.security.KeyStore;
 import java.security.KeyStore.PasswordProtection;
 import java.security.KeyStore.PrivateKeyEntry;
 
+import java.security.cert.Certificate;
+
 public class KeyStoreGen {
 
 	private static final String DEFAULT_KEY_STORE_FILE_NAME = "KeyStore.pfx";
@@ -22,10 +24,10 @@ public class KeyStoreGen {
 
 	public static CryptoKeyPair createKeyStore(final char[] passphrase, final String filename) {
 		final CryptoKeyPair keyPair = new CryptoKeyPair();
-		final PrivateKeyEntry privateKeyEntry = new PrivateKeyEntry(keyPair.getPrivateKey(), null);
-		final PasswordProtection passwordProtection = new PasswordProtection(passphrase, DEFAULT_PROTECTION_ALGORITHM,
-				null);
-		try (FileOutputStream fos = new FileOutputStream(filename)) {
+		final Certificate[] certificates = new Certificate[]{};
+		final PrivateKeyEntry privateKeyEntry = new PrivateKeyEntry(keyPair.getPrivateKey(), certificates);
+		final PasswordProtection passwordProtection = new PasswordProtection(passphrase, DEFAULT_PROTECTION_ALGORITHM, null);
+		try (FileOutputStream fos = new FileOutputStream(filename)){
 			final KeyStore keyStore = KeyStore.getInstance(DEFAULT_KEY_STORE_TYPE);
 			keyStore.setEntry(PRIVATE_KEY_ALIAS, privateKeyEntry, passwordProtection);
 			keyStore.store(fos, passphrase);
@@ -36,8 +38,8 @@ public class KeyStoreGen {
 		return keyPair;
 	}
 
-	public static KeyPair loadKey(final char[] passpharse) {
-		return loadKey(passpharse, DEFAULT_KEY_STORE_FILE_NAME);
+	public static KeyPair loadKey(final char[] passphrase) {
+		return loadKey(passphrase, DEFAULT_KEY_STORE_FILE_NAME);
 	}
 
 	public static KeyPair loadKey(final char[] passphrase, final String filename) {
