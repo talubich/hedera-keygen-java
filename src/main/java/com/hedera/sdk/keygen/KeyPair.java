@@ -4,13 +4,13 @@ import java.security.PrivateKey;
 
 public interface KeyPair {
 
-    PrivateKey getPrivateKey();
+	PrivateKey getPrivateKey();
 
-    byte[] getPublicKey();
+	byte[] getPublicKey();
 
-    byte[] getPublicKeyEncoded();
+	byte[] getPublicKeyEncoded();
 
-    byte[] signMessage(byte[] message);
+	byte[] signMessage(byte[] message);
 
-    boolean verifySignature(byte[] message, byte[] signature);
+	boolean verifySignature(byte[] message, byte[] signature);
 }

@@ -23,8 +23,9 @@ public class KeyStoreGen {
 	public static CryptoKeyPair createKeyStore(final char[] passphrase, final String filename) {
 		final CryptoKeyPair keyPair = new CryptoKeyPair();
 		final PrivateKeyEntry privateKeyEntry = new PrivateKeyEntry(keyPair.getPrivateKey(), null);
-		final PasswordProtection passwordProtection = new PasswordProtection(passphrase, DEFAULT_PROTECTION_ALGORITHM, null);
-		try (FileOutputStream fos = new FileOutputStream(filename)){
+		final PasswordProtection passwordProtection = new PasswordProtection(passphrase, DEFAULT_PROTECTION_ALGORITHM,
+				null);
+		try (FileOutputStream fos = new FileOutputStream(filename)) {
 			final KeyStore keyStore = KeyStore.getInstance(DEFAULT_KEY_STORE_TYPE);
 			keyStore.setEntry(PRIVATE_KEY_ALIAS, privateKeyEntry, passwordProtection);
 			keyStore.store(fos, passphrase);
@@ -41,10 +42,11 @@ public class KeyStoreGen {
 
 	public static KeyPair loadKey(final char[] passphrase, final String filename) {
 		try (FileInputStream fis = new FileInputStream(filename)) {
-			final PasswordProtection passwordProtection = new PasswordProtection(passphrase, DEFAULT_PROTECTION_ALGORITHM, null);
+			final PasswordProtection passwordProtection = new PasswordProtection(passphrase,
+					DEFAULT_PROTECTION_ALGORITHM, null);
 			final KeyStore keyStore = KeyStore.getInstance(DEFAULT_KEY_STORE_TYPE);
 			keyStore.load(fis, passphrase);
-			final PrivateKeyEntry entry = (PrivateKeyEntry)keyStore.getEntry(PRIVATE_KEY_ALIAS, passwordProtection);
+			final PrivateKeyEntry entry = (PrivateKeyEntry) keyStore.getEntry(PRIVATE_KEY_ALIAS, passwordProtection);
 			return EDKeyPair.buildFromPrivateKey(entry.getPrivateKey().getEncoded());
 		} catch (final Exception exception) {
 			throw new RuntimeException(exception);

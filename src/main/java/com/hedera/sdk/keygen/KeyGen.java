@@ -9,14 +9,14 @@ public final class KeyGen {
 	private final static void printStars() {
 		System.out.println("************************************************************************");
 	}
-	
-	public static void main (String[] args) {
+
+	public static void main(String[] args) {
 		final String ED25519 = "ED25519";
-		
+
 		String keyType = "";
 		String seed = "";
 		List<String> recoveryWords = new ArrayList<String>();
-		
+
 		// command line input parameters
 		if (args.length == 0) {
 			// default to ED25519
@@ -30,7 +30,7 @@ public final class KeyGen {
 				System.exit(3);
 			}
 		} else if (args.length == 22) {
-			for (int i=0; i < 22; i++) {
+			for (int i = 0; i < 22; i++) {
 				recoveryWords.add(args[i].replace(",", ""));
 			}
 		} else {
@@ -41,9 +41,9 @@ public final class KeyGen {
 			System.out.println("- 22 recovery words separated by spaces");
 			System.exit(4);
 		}
-		
+
 		byte[] seedBytes = null;
-		
+
 		if (recoveryWords.size() == 22) {
 			// recover key from words
 			try {
@@ -61,7 +61,7 @@ public final class KeyGen {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 		} else {
 			// generating new key
 			if (!seed.equals("")) {

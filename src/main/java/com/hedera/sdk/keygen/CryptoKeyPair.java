@@ -1,208 +1,243 @@
 package com.hedera.sdk.keygen;
 
+
+import org.bouncycastle.util.encoders.Hex;
+
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.spongycastle.util.encoders.Hex;
+
 /**
  * Implements public/private(secret) key management functions
  */
 public class CryptoKeyPair {
-	
-	private AbstractKeyPair keyPair = null;
-    private Seed seed = null;
 
-    /**
+	private AbstractKeyPair keyPair = null;
+	private Seed seed = null;
+
+	/**
 	 * sets the public key as a byte[]
 	 */
-    public void setPublicKey(byte[] publicKey) {
-    	keyPair.setPublicKey(publicKey);
-    }
+	public void setPublicKey(byte[] publicKey) {
+		keyPair.setPublicKey(publicKey);
+	}
+
 	/**
 	 * sets the encoded public key as a byte[]
 	 */
-    public void setPublicKeyEncoded(byte[] encodedPublicKey) {
-    	keyPair.setPublicKeyEncoded(encodedPublicKey);
-    }
+	public void setPublicKeyEncoded(byte[] encodedPublicKey) {
+		keyPair.setPublicKeyEncoded(encodedPublicKey);
+	}
+
 	/**
 	 * gets the public key as a byte[]
 	 * returns byte[0] if not set
 	 */
-    public byte[] getPublicKey() {
-    	if (this.keyPair != null) {
-    		return keyPair.getPublicKey();
-    	} else {
-    		return new byte[0];
-    	}
-    }
-    
+	public byte[] getPublicKey() {
+		if (this.keyPair != null) {
+			return keyPair.getPublicKey();
+		} else {
+			return new byte[0];
+		}
+	}
+
 	/**
 	 * gets the encoded public key as a byte[]
 	 * returns byte[0] if not set
 	 */
-    public byte[] getPublicKeyEncoded() {
-    	if (this.keyPair != null) {
-    		return this.keyPair.getPublicKeyEncoded();
-    	} else {
-    		return new byte[0];
-    	}
-    }
-    public String getPublicKeyEncodedHex() {
-    	if (this.keyPair != null) {
-    		return Hex.toHexString(this.keyPair.getPublicKey());
-    	} else {
-    		return "";
-    	}
-    }
-    
+	public byte[] getPublicKeyEncoded() {
+		if (this.keyPair != null) {
+			return this.keyPair.getPublicKeyEncoded();
+		} else {
+			return new byte[0];
+		}
+	}
+
+	public String getPublicKeyEncodedHex() {
+		if (this.keyPair != null) {
+			return Hex.toHexString(this.keyPair.getPublicKey());
+		} else {
+			return "";
+		}
+	}
+
 	/**
 	 * sets the secret key as a byte[]
 	 */
-    public void setSecretKey(byte[] secretKey) {
-    	keyPair.setSecretKey(secretKey);
-    }
+	public void setSecretKey(byte[] secretKey) {
+		keyPair.setSecretKey(secretKey);
+	}
+
 	/**
 	 * gets the secret key as a byte[]
 	 * returns byte[0] if not set
 	 */
-    public PrivateKey getPrivateKey() {
-    	if (this.keyPair != null) {
-        	return keyPair.getPrivateKey();
-    	} else {
-    		return null;
-    	}
-    }
+	public PrivateKey getPrivateKey() {
+		if (this.keyPair != null) {
+			return keyPair.getPrivateKey();
+		} else {
+			return null;
+		}
+	}
+
 	/**
 	 * gets the secret key as a String
 	 * returns "" if not set
 	 */
-    public String getPrivateKeyHex() {
-    	if (this.keyPair != null) {
-        	return Hex.toHexString(this.keyPair.getPrivateKey().getEncoded());
-    	} else {
-    		return "";
-    	}
-    }
+	public String getPrivateKeyHex() {
+		if (this.keyPair != null) {
+			return Hex.toHexString(this.keyPair.getPrivateKey().getEncoded());
+		} else {
+			return "";
+		}
+	}
 
-    /**
-     * Constructor from a key type and recoveryWords as an array of String
-     * Creates or Recovers a public/private keypair from the list of words
-     * @param recoveryWords String[]
-     * @throws NoSuchAlgorithmException
-     */
-    public CryptoKeyPair(String[] recoveryWords) throws NoSuchAlgorithmException  {
-	   	this(Arrays.asList(recoveryWords));
-    }    
-    /**
-     * Constructor from a key type and recoveryWords as an List of String
-     * Creates or Recovers a public/private keypair from the list of words
-     * @param recoveryWords
-     * @throws NoSuchAlgorithmException
-     */
-    public CryptoKeyPair(List<String> recoveryWords) throws NoSuchAlgorithmException  {
-	   	byte[] priv = null;
-	   	
-	   	byte[] privateKey;
-   		this.seed = Seed.fromWordList(recoveryWords);
-        privateKey = CryptoUtils.deriveKey(seed.toBytes(), -1, 32);
-        keyPair = new EDKeyPair(privateKey);
-   	}
-		
 	/**
-	 * Constructor from a key type and seed 
-	 * @param seed the seed to generate with
+	 * Constructor from a key type and recoveryWords as an array of String
+	 * Creates or Recovers a public/private keypair from the list of words
+	 *
+	 * @param recoveryWords
+	 * 		String[]
+	 * @throws NoSuchAlgorithmException
 	 */
-    public CryptoKeyPair(byte[] seed) {
-    	
-	   	byte[] priv = null;
-	   	
-	   	if (seed == null) {
-		 seed = CryptoUtils.getSecureRandomData(32);
-	   	}
-	   	byte[] privateKey;
-   		if (seed.length != 32) {
-   			throw new IllegalStateException(String.format("Seed size of %d is invalid, should be 32", seed.length));
-   		}
-   		this.seed = Seed.fromEntropy(seed);
-        privateKey = CryptoUtils.deriveKey(this.seed.toBytes(), -1, 32);
-        keyPair = new EDKeyPair(privateKey);
+	public CryptoKeyPair(String[] recoveryWords) throws NoSuchAlgorithmException {
+		this(Arrays.asList(recoveryWords));
+	}
 
-    }
-    
-    /** 
-     * Constructs a key pair of the given key type, the seed is randomly generated
-     * @throws NoSuchAlgorithmException
-     */
-    public CryptoKeyPair() {
-		this((byte[])null);
-    }
+	/**
+	 * Constructor from a key type and recoveryWords as an List of String
+	 * Creates or Recovers a public/private keypair from the list of words
+	 *
+	 * @param recoveryWords
+	 * @throws NoSuchAlgorithmException
+	 */
+	public CryptoKeyPair(List<String> recoveryWords) throws NoSuchAlgorithmException {
+		byte[] priv = null;
 
-    /**
-     * Constructs from a known pair of public and private key
-     * @param publicKey {@link Byte[]}
-     * @param secretKey {@link Byte[]}
-     */
-    public CryptoKeyPair(byte[] publicKey, byte[] secretKey) {
-   		keyPair = new EDKeyPair(publicKey, secretKey);
-    } 
-    
-    /**
-     * Constructs from a known pair of public and private key
-     * @param publicKey {@link String} as a hex encoded string
-     * @param secretKey {@link String} as a hex encoded string
-     */
-    public CryptoKeyPair(String publicKey, String secretKey) {
-    	byte[] pub = Hex.decode(publicKey);
-    	byte[] secret = Hex.decode(secretKey);
-   		keyPair = new EDKeyPair(pub, secret);
-    } 
-    
-    /**
-     * Returns the list of recoveryWords for a key pair
-     * @return List<String>
-     * @throws IllegalStateException if the key type is invalid
-     */
-    public List<String> recoveryWordsList() {
-    	
-   		if (this.seed != null) {
-   			return this.seed.toWords();
-   		} else {
-   			return new ArrayList<String>();
-   		}
-    }
-    /**
-     * Returns the list of recoveryWords for a key pair
-     * @return String[]
-     * @throws IllegalStateException if the key type is invalid
-     */
-    public String[] recoveryWordsArray() {
-   		List<String> wordList = new ArrayList<String>();
-   		if (this.seed != null) {
-	   		wordList = this.seed.toWords();
-	   		return wordList.toArray(new String[0]);
-   		} else {
-   			return new String[0];
-   		}
-    }
-    /**
-     * signs a message with the private key
-     * @param message byte[]
-     * @return byte[]
-     * @throws IllegalStateException if the private key is unknown or key type is not supported
-     */
-    public byte[] signMessage(byte[] message) {
-    	return keyPair.signMessage(message);
-    }
-    /**
-     * verifies a message against a signature
-     * @param message byte[]
-     * @param signature byte[]
-     * @return {@link Boolean}
-     * @throws IllegalStateException if the private key is unknown or key type is not supported
-     */
-    public boolean verifySignature(byte[] message, byte[] signature) {
-    	return keyPair.verifySignature(message, signature);
-    }
+		byte[] privateKey;
+		this.seed = Seed.fromWordList(recoveryWords);
+		privateKey = CryptoUtils.deriveKey(seed.toBytes(), -1, 32);
+		keyPair = new EDKeyPair(privateKey);
+	}
+
+	/**
+	 * Constructor from a key type and seed
+	 *
+	 * @param seed
+	 * 		the seed to generate with
+	 */
+	public CryptoKeyPair(byte[] seed) {
+
+		byte[] priv = null;
+
+		if (seed == null) {
+			seed = CryptoUtils.getSecureRandomData(32);
+		}
+		byte[] privateKey;
+		if (seed.length != 32) {
+			throw new IllegalStateException(String.format("Seed size of %d is invalid, should be 32", seed.length));
+		}
+		this.seed = Seed.fromEntropy(seed);
+		privateKey = CryptoUtils.deriveKey(this.seed.toBytes(), -1, 32);
+		keyPair = new EDKeyPair(privateKey);
+
+	}
+
+	/**
+	 * Constructs a key pair of the given key type, the seed is randomly generated
+	 *
+	 * @throws NoSuchAlgorithmException
+	 */
+	public CryptoKeyPair() {
+		this((byte[]) null);
+	}
+
+	/**
+	 * Constructs from a known pair of public and private key
+	 *
+	 * @param publicKey
+	 * 		{@link Byte[]}
+	 * @param secretKey
+	 * 		{@link Byte[]}
+	 */
+	public CryptoKeyPair(byte[] publicKey, byte[] secretKey) {
+		keyPair = new EDKeyPair(publicKey, secretKey);
+	}
+
+	/**
+	 * Constructs from a known pair of public and private key
+	 *
+	 * @param publicKey
+	 * 		{@link String} as a hex encoded string
+	 * @param secretKey
+	 * 		{@link String} as a hex encoded string
+	 */
+	public CryptoKeyPair(String publicKey, String secretKey) {
+		byte[] pub = Hex.decode(publicKey);
+		byte[] secret = Hex.decode(secretKey);
+		keyPair = new EDKeyPair(pub, secret);
+	}
+
+	/**
+	 * Returns the list of recoveryWords for a key pair
+	 *
+	 * @return List<String>
+	 * @throws IllegalStateException
+	 * 		if the key type is invalid
+	 */
+	public List<String> recoveryWordsList() {
+
+		if (this.seed != null) {
+			return this.seed.toWords();
+		} else {
+			return new ArrayList<String>();
+		}
+	}
+
+	/**
+	 * Returns the list of recoveryWords for a key pair
+	 *
+	 * @return String[]
+	 * @throws IllegalStateException
+	 * 		if the key type is invalid
+	 */
+	public String[] recoveryWordsArray() {
+		List<String> wordList = new ArrayList<String>();
+		if (this.seed != null) {
+			wordList = this.seed.toWords();
+			return wordList.toArray(new String[0]);
+		} else {
+			return new String[0];
+		}
+	}
+
+	/**
+	 * signs a message with the private key
+	 *
+	 * @param message
+	 * 		byte[]
+	 * @return byte[]
+	 * @throws IllegalStateException
+	 * 		if the private key is unknown or key type is not supported
+	 */
+	public byte[] signMessage(byte[] message) {
+		return keyPair.signMessage(message);
+	}
+
+	/**
+	 * verifies a message against a signature
+	 *
+	 * @param message
+	 * 		byte[]
+	 * @param signature
+	 * 		byte[]
+	 * @return {@link Boolean}
+	 * @throws IllegalStateException
+	 * 		if the private key is unknown or key type is not supported
+	 */
+	public boolean verifySignature(byte[] message, byte[] signature) {
+		return keyPair.verifySignature(message, signature);
+	}
 }
