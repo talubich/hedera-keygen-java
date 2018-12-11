@@ -1,7 +1,5 @@
 package com.hedera.sdk.keygen;
 
-import java.security.PrivateKey;
-
 abstract class AbstractKeyPair implements KeyPair {
 	
 	 protected Seed seed = null;

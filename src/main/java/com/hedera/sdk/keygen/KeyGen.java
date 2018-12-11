@@ -54,7 +54,7 @@ public final class KeyGen {
 				System.out.println("Length of public key" + keyPair.getPublicKey().length);
 				System.out.println(keyPair.getPublicKeyEncodedHex());
 				System.out.println("Secret key:");
-				System.out.println("Length of private key" + keyPair.getPrivateKey().length);
+				System.out.println("Length of private key" + keyPair.getPrivateKey().getEncoded().length);
 				System.out.println(keyPair.getPrivateKeyHex());
 				printStars();
 			} catch (NoSuchAlgorithmException e) {
@@ -75,7 +75,7 @@ public final class KeyGen {
 			System.out.println("Length of public key: " + keyPair.getPublicKey().length);
 			System.out.println(keyPair.getPublicKeyEncodedHex());
 			System.out.println("Secret key:");
-			System.out.println("Length of private key: " + keyPair.getPrivateKey().length);
+			System.out.println("Length of private key: " + keyPair.getPrivateKey().getEncoded().length);
 			System.out.println(keyPair.getPrivateKeyHex());
 			System.out.println("Recovery word list:");
 			System.out.println(keyPair.recoveryWordsList());

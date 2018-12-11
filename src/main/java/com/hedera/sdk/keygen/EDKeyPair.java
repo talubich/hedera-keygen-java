@@ -19,39 +19,49 @@ public class EDKeyPair extends AbstractKeyPair {
     private EdDSAPrivateKey edPrivateKey;
     private EdDSAPublicKey edPublicKey;
 
-    public EDKeyPair(byte[] seed) {
-        EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName(EdDSANamedCurveTable.ED_25519);
-        EdDSAPrivateKeySpec privateKeySpec = new EdDSAPrivateKeySpec(seed, spec);
+    public EDKeyPair(final byte[] seed) {
+        final EdDSAParameterSpec spec = getEdDSAParameterSpec();
+        final EdDSAPrivateKeySpec privateKeySpec = new EdDSAPrivateKeySpec(seed, spec);
         this.edPrivateKey = new EdDSAPrivateKey(privateKeySpec);
         this.privateKey = edPrivateKey.geta();
-        EdDSAPublicKeySpec pubKeySpec = new EdDSAPublicKeySpec(privateKeySpec.getA(), spec);
+        final EdDSAPublicKeySpec pubKeySpec = new EdDSAPublicKeySpec(privateKeySpec.getA(), spec);
         this.edPublicKey = new EdDSAPublicKey(pubKeySpec);
         this.publicKey = edPublicKey.getAbyte();
     }
 
-    public EDKeyPair(byte[] publicKey, byte[] privateKey) {
-        PKCS8EncodedKeySpec encodedPrivKey = new PKCS8EncodedKeySpec(privateKey);
-    	X509EncodedKeySpec encodedPubKey = new X509EncodedKeySpec(publicKey);
+    public EDKeyPair(final byte[] publicKey, final byte[] privateKey) {
         try {
+			final PKCS8EncodedKeySpec encodedPrivKey = new PKCS8EncodedKeySpec(privateKey);
+			final X509EncodedKeySpec encodedPubKey = new X509EncodedKeySpec(publicKey);
 			this.edPrivateKey = new EdDSAPrivateKey(encodedPrivKey);
 			this.privateKey = edPrivateKey.geta();
 	        this.edPublicKey = new EdDSAPublicKey(encodedPubKey);
 	        this.publicKey = edPublicKey.getAbyte();
-		} catch (InvalidKeySpecException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (final InvalidKeySpecException e) {
+			throw new RuntimeException(e);
 		}
     }
 
+    public static EDKeyPair buildFromPrivateKey(final byte[] privateKey) {
+		try {
+			final EDKeyPair edKeyPair = new EDKeyPair();
+			final PKCS8EncodedKeySpec encodedPrivKey = new PKCS8EncodedKeySpec(privateKey);
+			edKeyPair.edPrivateKey = new EdDSAPrivateKey(encodedPrivKey);
+			edKeyPair.edPublicKey = new EdDSAPublicKey(new EdDSAPublicKeySpec(edKeyPair.edPrivateKey.getAbyte(), getEdDSAParameterSpec()));
+			return edKeyPair;
+		} catch (final Exception exception) {
+			throw new RuntimeException(exception);
+		}
+	}
+
     @Override
-    public void setPublicKey(byte[] publicKey) {
-    	X509EncodedKeySpec encodedPubKey = new X509EncodedKeySpec(publicKey);
+    public void setPublicKey(final byte[] publicKey) {
     	try {
-	        this.edPublicKey = new EdDSAPublicKey(encodedPubKey);
+			final X509EncodedKeySpec encodedPubKey = new X509EncodedKeySpec(publicKey);
+			this.edPublicKey = new EdDSAPublicKey(encodedPubKey);
 	        this.publicKey = edPublicKey.getAbyte();
-		} catch (InvalidKeySpecException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (final InvalidKeySpecException e) {
+			throw new RuntimeException(e);
 		}
     }
 
@@ -63,50 +73,51 @@ public class EDKeyPair extends AbstractKeyPair {
 	@Override
     public byte[] getPublicKey() {
         return this.edPublicKey.getAbyte();
-//        return publicKey.getEncoded();        
     }
 
     public byte[] getPublicKeyEncoded() {
         return this.edPublicKey.getEncoded();     
     }
 
-    public void setSecretKey(byte[] secretKey) {
-    	PKCS8EncodedKeySpec encodedPrivKey = new PKCS8EncodedKeySpec(privateKey);
+    public void setSecretKey(final byte[] secretKey) {
         try {
+			final PKCS8EncodedKeySpec encodedPrivKey = new PKCS8EncodedKeySpec(privateKey);
 			this.edPrivateKey = new EdDSAPrivateKey(encodedPrivKey);
 			this.privateKey = edPrivateKey.getEncoded();
-		} catch (InvalidKeySpecException e) {
-			e.printStackTrace();
+		} catch (final InvalidKeySpecException e) {
+			throw new RuntimeException(e);
 		}
     }
     
     @Override
-    public byte[] signMessage(byte[] message) {
+    public byte[] signMessage(final byte[] message) {
         try {
-        	
-            Signature sgr = new EdDSAEngine();
+            final Signature sgr = new EdDSAEngine();
             sgr.initSign(edPrivateKey);
             sgr.update(message);
-            byte[] signedMessage = sgr.sign();
-            return signedMessage;
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            return sgr.sign();
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
         }
-        return new byte[0];
     }
 
     @Override
     public boolean verifySignature(byte[] message, byte[] signature) {
         try {
-            Signature sgr = new EdDSAEngine();
+            final Signature sgr = new EdDSAEngine();
             sgr.initVerify(edPublicKey);
             sgr.update(message);
             return sgr.verify(signature);
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
         }
-        return false;
     }
+
+	private EDKeyPair() {
+	}
+
+    private static EdDSAParameterSpec getEdDSAParameterSpec() {
+		return EdDSANamedCurveTable.getByName(EdDSANamedCurveTable.ED_25519);
+	}
 }
