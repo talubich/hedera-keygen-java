@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -29,7 +30,14 @@ public class KeyStoreGenTests {
 
 			final java.security.KeyPair keyPair;
 
-			try (final InputStream istream = new ByteArrayInputStream(ostream.toByteArray())) {
+			final byte[] outputBytes = ostream.toByteArray();
+
+//			try (final FileOutputStream fos = new FileOutputStream("Test.pem")) {
+//				fos.write(outputBytes);
+//				fos.flush();
+//			}
+
+			try (final InputStream istream = new ByteArrayInputStream(outputBytes)) {
 				 keyPair = KeyStoreGen.loadKey(istream, passphrase);
 			}
 
