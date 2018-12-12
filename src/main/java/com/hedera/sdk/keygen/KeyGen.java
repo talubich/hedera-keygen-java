@@ -26,7 +26,7 @@ public final class KeyGen {
 			keyType = ED25519;
 			seed = args[0];
 			if (seed.length() != 32) {
-				System.out.println("Seed length must be 32 bytes for ED25519");
+				System.out.println("Seed length must be 32 bytes for ED25519 (not hex encoded)");
 				System.exit(3);
 			}
 		} else if (args.length == 22) {
@@ -37,8 +37,8 @@ public final class KeyGen {
 			System.out.println("Invalid input parameters");
 			System.out.println("Should be");
 			System.out.println("- no parameters - generates an ED25519 key");
-			System.out.println("- a 32 byte seed string");
-			System.out.println("- 22 recovery words separated by spaces");
+			System.out.println("- a 32 byte seed string (not hex encoded)");
+			System.out.println("- 22 recovery words separated by spaces or commas");
 			System.exit(4);
 		}
 
