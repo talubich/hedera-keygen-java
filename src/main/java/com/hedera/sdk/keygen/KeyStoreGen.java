@@ -1,5 +1,16 @@
 package com.hedera.sdk.keygen;
 
+import net.i2p.crypto.eddsa.EdDSAEngine;
+import net.i2p.crypto.eddsa.EdDSAKey;
+import net.i2p.crypto.eddsa.EdDSAPrivateKey;
+import net.i2p.crypto.eddsa.EdDSAPublicKey;
+import net.i2p.crypto.eddsa.EdDSASecurityProvider;
+import net.i2p.crypto.eddsa.math.Curve;
+import net.i2p.crypto.eddsa.spec.EdDSANamedCurveSpec;
+import net.i2p.crypto.eddsa.spec.EdDSANamedCurveTable;
+import net.i2p.crypto.eddsa.spec.EdDSAPublicKeySpec;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
@@ -8,21 +19,51 @@ import org.bouncycastle.cert.X509v1CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
 import org.bouncycastle.crypto.util.PrivateKeyFactory;
+import org.bouncycastle.crypto.util.PrivateKeyInfoFactory;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.openssl.PEMDecryptorProvider;
+import org.bouncycastle.openssl.PEMEncryptedKeyPair;
+import org.bouncycastle.openssl.PEMKeyPair;
+import org.bouncycastle.openssl.PEMParser;
+import org.bouncycastle.openssl.PKCS8Generator;
+import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
+import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
+import org.bouncycastle.openssl.jcajce.JcaPKCS8Generator;
+import org.bouncycastle.openssl.jcajce.JceOpenSSLPKCS8DecryptorProviderBuilder;
+import org.bouncycastle.openssl.jcajce.JceOpenSSLPKCS8EncryptorBuilder;
+import org.bouncycastle.openssl.jcajce.JcePEMDecryptorProviderBuilder;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.DefaultDigestAlgorithmIdentifierFinder;
 import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder;
+import org.bouncycastle.operator.InputDecryptor;
+import org.bouncycastle.operator.InputDecryptorProvider;
 import org.bouncycastle.operator.OperatorCreationException;
+import org.bouncycastle.operator.OutputEncryptor;
 import org.bouncycastle.operator.bc.BcECContentSignerBuilder;
+import org.bouncycastle.pkcs.PKCS8EncryptedPrivateKeyInfo;
+import org.bouncycastle.pkcs.PKCSException;
+import org.bouncycastle.util.io.pem.PemGenerationException;
+import org.bouncycastle.util.io.pem.PemObject;
 
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.math.BigInteger;
+import java.security.DrbgParameters;
+import java.security.KeyFactory;
+import java.security.KeyPairGenerator;
 import java.security.KeyStore;
 import java.security.KeyStore.PasswordProtection;
 import java.security.KeyStore.PrivateKeyEntry;
 
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.Provider;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.cert.Certificate;
@@ -91,5 +132,62 @@ public class KeyStoreGen {
 		X509v1CertificateBuilder v1CertGen = new X509v1CertificateBuilder(dn, sn, from, to, dn, subPubKeyInfo);
 		X509CertificateHolder certificateHolder = v1CertGen.build(sigGen);
 		return new JcaX509CertificateConverter().setProvider("BC").getCertificate(certificateHolder);
+	}
+
+	public static void writeKey(final PrivateKey privateKey, final OutputStream ostream, final char[] password) throws NoSuchAlgorithmException, OperatorCreationException, IOException {
+
+		final Provider bcProvider = new BouncyCastleProvider();
+
+		final SecureRandom random = SecureRandom.getInstance("DRBG",
+				DrbgParameters.instantiation(256, DrbgParameters.Capability.RESEED_ONLY, null));
+
+		final OutputEncryptor encryptor = (new JceOpenSSLPKCS8EncryptorBuilder(PKCS8Generator.AES_256_CBC))
+				.setPRF(PKCS8Generator.PRF_HMACSHA384)
+				.setIterationCount(10000)
+				.setRandom(random)
+				.setPasssword(password)
+				.setProvider(bcProvider)
+				.build();
+
+		final JcaPKCS8Generator generator = new JcaPKCS8Generator(privateKey, encryptor);
+		final PemObject pemObject = generator.generate();
+
+		final JcaPEMWriter pemWriter = new JcaPEMWriter(new OutputStreamWriter(ostream));
+
+		pemWriter.writeObject(pemObject);
+		pemWriter.flush();
+
+	}
+
+	public static java.security.KeyPair loadKey(final InputStream istream, final char[] password) throws IOException,
+			OperatorCreationException, PKCSException, NoSuchAlgorithmException {
+		final Provider bcProvider = new BouncyCastleProvider();
+		final Provider edProvider = new EdDSASecurityProvider();
+		final PEMParser parser = new PEMParser(new InputStreamReader(istream));
+		final Object rawObject = parser.readObject();
+		final JcaPEMKeyConverter converter = new JcaPEMKeyConverter().setProvider(edProvider);
+
+		java.security.KeyPair kp;
+
+		if (rawObject instanceof PEMEncryptedKeyPair) {
+			final PEMEncryptedKeyPair ekp = (PEMEncryptedKeyPair)rawObject;
+			final PEMDecryptorProvider decryptor = new JcePEMDecryptorProviderBuilder().setProvider(bcProvider).build(password);
+			kp = converter.getKeyPair(ekp.decryptKeyPair(decryptor));
+		} else if (rawObject instanceof PKCS8EncryptedPrivateKeyInfo) {
+			final PKCS8EncryptedPrivateKeyInfo ekpi = (PKCS8EncryptedPrivateKeyInfo)rawObject;
+			final InputDecryptorProvider decryptor = new JceOpenSSLPKCS8DecryptorProviderBuilder()
+					.setProvider(bcProvider)
+					.build(password);
+
+			final PrivateKeyInfo pki = ekpi.decryptPrivateKeyInfo(decryptor);
+			final EdDSAPrivateKey sk = (EdDSAPrivateKey)converter.getPrivateKey(pki);
+			final EdDSAPublicKey pk = new EdDSAPublicKey(new EdDSAPublicKeySpec(sk.getA(), EdDSANamedCurveTable.ED_25519_CURVE_SPEC));
+			kp = new java.security.KeyPair(pk, sk);
+		} else {
+			final PEMKeyPair ukp = (PEMKeyPair)rawObject;
+			kp = converter.getKeyPair(ukp);
+		}
+
+		return kp;
 	}
 }
