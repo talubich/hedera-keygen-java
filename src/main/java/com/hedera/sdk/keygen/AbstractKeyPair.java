@@ -1,26 +1,35 @@
 package com.hedera.sdk.keygen;
 
 abstract class AbstractKeyPair implements KeyPair {
+	
+	 protected Seed seed = null;
 
-	protected Seed seed = null;
+	 protected byte[] publicKey = new byte[0]; 
+	 protected byte[] publicKeyEncoded = new byte[0]; 
+	 protected byte[] privateKey = new byte[0];
+	 
+	 
+	 public void setPublicKey(byte[] publicKey) {
+		 this.publicKey = publicKey;
+	 }
 
-	protected byte[] publicKey = new byte[0];
-	protected byte[] publicKeyEncoded = new byte[0];
-	protected byte[] privateKey = new byte[0];
+	 public void setPublicKeyEncoded(byte[] encodedPublicKey) {
+		 this.publicKeyEncoded = encodedPublicKey;
+	 }
+	 
+	 public void setSecretKey(byte[] secretKey) {
+		 this.privateKey = secretKey;
+	 }
 
-
-	public void setPublicKey(byte[] publicKey) {
-		this.publicKey = publicKey;
+	@Override
+	public byte[] getPrivateKey() {
+		return this.privateKey;
 	}
 
-	public void setPublicKeyEncoded(byte[] encodedPublicKey) {
-		this.publicKeyEncoded = encodedPublicKey;
+	@Override
+	public byte[] getPublicKey() {
+		return this.publicKey;
 	}
-
-	public void setSecretKey(byte[] secretKey) {
-		this.privateKey = secretKey;
-	}
-
 	@Override
 	public byte[] getPublicKeyEncoded() {
 		return this.publicKeyEncoded;

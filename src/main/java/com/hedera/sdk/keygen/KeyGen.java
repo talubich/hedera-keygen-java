@@ -9,14 +9,14 @@ public final class KeyGen {
 	private final static void printStars() {
 		System.out.println("************************************************************************");
 	}
-
-	public static void main(String[] args) {
+	
+	public static void main (String[] args) {
 		final String ED25519 = "ED25519";
-
+		
 		String keyType = "";
 		String seed = "";
 		List<String> recoveryWords = new ArrayList<String>();
-
+		
 		// command line input parameters
 		if (args.length == 0) {
 			// default to ED25519
@@ -30,7 +30,7 @@ public final class KeyGen {
 				System.exit(3);
 			}
 		} else if (args.length == 22) {
-			for (int i = 0; i < 22; i++) {
+			for (int i=0; i < 22; i++) {
 				recoveryWords.add(args[i].replace(",", ""));
 			}
 		} else {
@@ -41,27 +41,25 @@ public final class KeyGen {
 			System.out.println("- 22 recovery words separated by spaces");
 			System.exit(4);
 		}
-
+		
 		byte[] seedBytes = null;
-
+		
 		if (recoveryWords.size() == 22) {
 			// recover key from words
 			try {
 				CryptoKeyPair keyPair = new CryptoKeyPair(recoveryWords);
 				printStars();
 				System.out.println("Your recovered key pair is:");
-				System.out.println("Public key:");
-				System.out.println("Length of public key" + keyPair.getPublicKey().getEncoded().length);
+				System.out.print("Public key:");
 				System.out.println(keyPair.getPublicKeyEncodedHex());
-				System.out.println("Secret key:");
-				System.out.println("Length of private key" + keyPair.getPrivateKey().getEncoded().length);
-				System.out.println(keyPair.getPrivateKeyHex());
+				System.out.print("Secret key:");
+				System.out.println(keyPair.getSecretKeyHex());
 				printStars();
 			} catch (NoSuchAlgorithmException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
+			
 		} else {
 			// generating new key
 			if (!seed.equals("")) {
@@ -71,12 +69,10 @@ public final class KeyGen {
 			CryptoKeyPair keyPair = new CryptoKeyPair(seedBytes);
 			printStars();
 			System.out.println("Your key pair is:");
-			System.out.println("Public key:");
-			System.out.println("Length of public key: " + keyPair.getPublicKey().getEncoded().length);
+			System.out.print("Public key:");
 			System.out.println(keyPair.getPublicKeyEncodedHex());
-			System.out.println("Secret key:");
-			System.out.println("Length of private key: " + keyPair.getPrivateKey().getEncoded().length);
-			System.out.println(keyPair.getPrivateKeyHex());
+			System.out.print("Secret key:");
+			System.out.println(keyPair.getSecretKeyHex());
 			System.out.println("Recovery word list:");
 			System.out.println(keyPair.recoveryWordsList());
 			printStars();
