@@ -5,6 +5,7 @@ import org.bouncycastle.util.encoders.Hex;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,12 +36,8 @@ public class CryptoKeyPair {
 	 * gets the public key as a byte[]
 	 * returns byte[0] if not set
 	 */
-	public byte[] getPublicKey() {
-		if (this.keyPair != null) {
-			return keyPair.getPublicKey();
-		} else {
-			return new byte[0];
-		}
+	public PublicKey getPublicKey() {
+		return keyPair.getPublicKey();
 	}
 
 	/**
@@ -57,7 +54,7 @@ public class CryptoKeyPair {
 
 	public String getPublicKeyEncodedHex() {
 		if (this.keyPair != null) {
-			return Hex.toHexString(this.keyPair.getPublicKey());
+			return Hex.toHexString(this.keyPair.getPublicKey().getEncoded());
 		} else {
 			return "";
 		}

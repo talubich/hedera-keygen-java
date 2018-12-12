@@ -51,7 +51,7 @@ public final class KeyGen {
 				printStars();
 				System.out.println("Your recovered key pair is:");
 				System.out.println("Public key:");
-				System.out.println("Length of public key" + keyPair.getPublicKey().length);
+				System.out.println("Length of public key" + keyPair.getPublicKey().getEncoded().length);
 				System.out.println(keyPair.getPublicKeyEncodedHex());
 				System.out.println("Secret key:");
 				System.out.println("Length of private key" + keyPair.getPrivateKey().getEncoded().length);
@@ -72,7 +72,7 @@ public final class KeyGen {
 			printStars();
 			System.out.println("Your key pair is:");
 			System.out.println("Public key:");
-			System.out.println("Length of public key: " + keyPair.getPublicKey().length);
+			System.out.println("Length of public key: " + keyPair.getPublicKey().getEncoded().length);
 			System.out.println(keyPair.getPublicKeyEncodedHex());
 			System.out.println("Secret key:");
 			System.out.println("Length of private key: " + keyPair.getPrivateKey().getEncoded().length);

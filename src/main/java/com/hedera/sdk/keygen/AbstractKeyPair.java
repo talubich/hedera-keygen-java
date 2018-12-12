@@ -22,11 +22,6 @@ abstract class AbstractKeyPair implements KeyPair {
 	}
 
 	@Override
-	public byte[] getPublicKey() {
-		return this.publicKey;
-	}
-
-	@Override
 	public byte[] getPublicKeyEncoded() {
 		return this.publicKeyEncoded;
 	}

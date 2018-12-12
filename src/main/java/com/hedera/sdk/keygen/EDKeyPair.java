@@ -9,6 +9,7 @@ import net.i2p.crypto.eddsa.spec.EdDSAPrivateKeySpec;
 import net.i2p.crypto.eddsa.spec.EdDSAPublicKeySpec;
 
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.Signature;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -72,8 +73,8 @@ public class EDKeyPair extends AbstractKeyPair {
 	}
 
 	@Override
-	public byte[] getPublicKey() {
-		return this.edPublicKey.getAbyte();
+	public PublicKey getPublicKey() {
+		return this.edPublicKey;
 	}
 
 	public byte[] getPublicKeyEncoded() {

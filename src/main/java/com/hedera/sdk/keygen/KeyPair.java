@@ -1,12 +1,13 @@
 package com.hedera.sdk.keygen;
 
 import java.security.PrivateKey;
+import java.security.PublicKey;
 
 public interface KeyPair {
 
 	PrivateKey getPrivateKey();
 
-	byte[] getPublicKey();
+	PublicKey getPublicKey();
 
 	byte[] getPublicKeyEncoded();
 
