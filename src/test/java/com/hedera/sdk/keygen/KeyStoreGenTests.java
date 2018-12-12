@@ -6,16 +6,11 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class KeyStoreGenTests {
 
@@ -31,11 +26,6 @@ public class KeyStoreGenTests {
 			final java.security.KeyPair keyPair;
 
 			final byte[] outputBytes = ostream.toByteArray();
-
-//			try (final FileOutputStream fos = new FileOutputStream("Test.pem")) {
-//				fos.write(outputBytes);
-//				fos.flush();
-//			}
 
 			try (final InputStream istream = new ByteArrayInputStream(outputBytes)) {
 				 keyPair = KeyStoreGen.loadKey(istream, passphrase);
