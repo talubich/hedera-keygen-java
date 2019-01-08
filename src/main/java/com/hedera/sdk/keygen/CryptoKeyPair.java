@@ -25,21 +25,28 @@ public class CryptoKeyPair {
 		keyPair.setPublicKey(publicKey);
 	}
 
-	/**
-	 * sets the encoded public key as a byte[]
-	 */
-	public void setPublicKeyEncoded(byte[] encodedPublicKey) {
-		keyPair.setPublicKeyEncoded(encodedPublicKey);
+	public void setPublic(PublicKey publicKey) {
+		keyPair.setPublicKey(publicKey);
 	}
 
 	/**
 	 * gets the public key as a byte[]
 	 * returns byte[0] if not set
 	 */
-	public PublicKey getPublicKey() {
+	public byte[] getPublicKey() {
 		return keyPair.getPublicKey();
 	}
+	public PublicKey getPublic() {
+		return keyPair.getPublic();
+	}
 
+	public byte[] getPrivateKey() {
+		return keyPair.getSecretKey();
+	}
+	public PrivateKey getPrivate() {
+		return keyPair.getSecret();
+	}
+	
 	/**
 	 * gets the encoded public key as a byte[]
 	 * returns byte[0] if not set
@@ -54,7 +61,15 @@ public class CryptoKeyPair {
 
 	public String getPublicKeyEncodedHex() {
 		if (this.keyPair != null) {
-			return Hex.toHexString(this.keyPair.getPublicKey().getEncoded());
+			return Hex.toHexString(this.keyPair.getPublicKeyEncoded());
+		} else {
+			return "";
+		}
+	}
+
+	public String getPublicKeyHex() {
+		if (this.keyPair != null) {
+			return Hex.toHexString(this.keyPair.getPublicKey());
 		} else {
 			return "";
 		}
@@ -71,9 +86,17 @@ public class CryptoKeyPair {
 	 * gets the secret key as a byte[]
 	 * returns byte[0] if not set
 	 */
-	public PrivateKey getPrivateKey() {
+	public byte[] getSecretKey() {
 		if (this.keyPair != null) {
-			return keyPair.getPrivateKey();
+			return keyPair.getSecretKey();
+		} else {
+			return null;
+		}
+	}
+
+	public byte[] getSecretKeyEncoded() {
+		if (this.keyPair != null) {
+			return keyPair.getSecretKeyEncoded();
 		} else {
 			return null;
 		}
@@ -83,9 +106,17 @@ public class CryptoKeyPair {
 	 * gets the secret key as a String
 	 * returns "" if not set
 	 */
-	public String getPrivateKeyHex() {
+	public String getSecretKeyHex() {
 		if (this.keyPair != null) {
-			return Hex.toHexString(this.keyPair.getPrivateKey().getEncoded());
+			return Hex.toHexString(this.keyPair.getSecretKey());
+		} else {
+			return "";
+		}
+	}
+
+	public String getSecretKeyEncodedHex() {
+		if (this.keyPair != null) {
+			return Hex.toHexString(this.keyPair.getSecretKeyEncoded());
 		} else {
 			return "";
 		}
@@ -99,8 +130,8 @@ public class CryptoKeyPair {
 	 * 		String[]
 	 * @throws NoSuchAlgorithmException
 	 */
-	public CryptoKeyPair(String[] recoveryWords) throws NoSuchAlgorithmException {
-		this(Arrays.asList(recoveryWords));
+	public CryptoKeyPair(String[] recoveryWords, int index) throws NoSuchAlgorithmException {
+		this(Arrays.asList(recoveryWords), index);
 	}
 
 	/**
@@ -110,12 +141,12 @@ public class CryptoKeyPair {
 	 * @param recoveryWords
 	 * @throws NoSuchAlgorithmException
 	 */
-	public CryptoKeyPair(List<String> recoveryWords) throws NoSuchAlgorithmException {
+	public CryptoKeyPair(List<String> recoveryWords, int index) throws NoSuchAlgorithmException {
 		byte[] priv = null;
 
 		byte[] privateKey;
 		this.seed = Seed.fromWordList(recoveryWords);
-		privateKey = CryptoUtils.deriveKey(seed.toBytes(), -1, 32);
+		privateKey = CryptoUtils.deriveKey(seed.toBytes(), index, 32);
 		keyPair = new EDKeyPair(privateKey);
 	}
 
@@ -125,7 +156,7 @@ public class CryptoKeyPair {
 	 * @param seed
 	 * 		the seed to generate with
 	 */
-	public CryptoKeyPair(byte[] seed) {
+	public CryptoKeyPair(byte[] seed, int index) {
 
 		byte[] priv = null;
 
@@ -137,7 +168,7 @@ public class CryptoKeyPair {
 			throw new IllegalStateException(String.format("Seed size of %d is invalid, should be 32", seed.length));
 		}
 		this.seed = Seed.fromEntropy(seed);
-		privateKey = CryptoUtils.deriveKey(this.seed.toBytes(), -1, 32);
+		privateKey = CryptoUtils.deriveKey(this.seed.toBytes(), index, 32);
 		keyPair = new EDKeyPair(privateKey);
 
 	}
@@ -147,8 +178,8 @@ public class CryptoKeyPair {
 	 *
 	 * @throws NoSuchAlgorithmException
 	 */
-	public CryptoKeyPair() {
-		this((byte[]) null);
+	public CryptoKeyPair(int index) {
+		this((byte[]) null, index);
 	}
 
 	/**
@@ -237,4 +268,5 @@ public class CryptoKeyPair {
 	public boolean verifySignature(byte[] message, byte[] signature) {
 		return keyPair.verifySignature(message, signature);
 	}
+
 }

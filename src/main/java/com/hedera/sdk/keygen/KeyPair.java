@@ -5,11 +5,33 @@ import java.security.PublicKey;
 
 public interface KeyPair {
 
-	PrivateKey getPrivateKey();
+	void setPublicKey(PublicKey publicKey);
 
-	PublicKey getPublicKey();
+	void setSecretKey(PrivateKey secretKey);
+
+	void setPublicKey(byte[] publicKey);
+
+	void setSecretKey(byte[] secretKey);
 
 	byte[] getPublicKeyEncoded();
+
+	byte[] getPublicKey();
+
+	PublicKey getPublic();
+
+	String getPublicKeyEncodedHex();
+
+	String getPublicKeyHex();
+
+	byte[] getSecretKey();
+
+	byte[] getSecretKeyEncoded();
+
+	PrivateKey getSecret();
+
+	String getSecretKeyEncodedHex();
+
+	String getSecretKeyHex();
 
 	byte[] signMessage(byte[] message);
 

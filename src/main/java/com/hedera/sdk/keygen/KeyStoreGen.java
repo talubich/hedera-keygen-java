@@ -6,6 +6,7 @@ import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v1CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
+import org.bouncycastle.crypto.RuntimeCryptoException;
 import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
 import org.bouncycastle.crypto.util.PrivateKeyFactory;
 import org.bouncycastle.operator.ContentSigner;
@@ -46,18 +47,20 @@ public class KeyStoreGen {
 	}
 
 	public static CryptoKeyPair createKeyStore(final char[] passphrase, final String filename) {
-		try (FileOutputStream fos = new FileOutputStream(filename)){
-			final CryptoKeyPair keyPair = new CryptoKeyPair();
-			final Certificate[] certificates = new Certificate[]{ createCertificate(keyPair.getPublicKey(), keyPair.getPrivateKey()) };
-			final PrivateKeyEntry privateKeyEntry = new PrivateKeyEntry(keyPair.getPrivateKey(), certificates);
-			final PasswordProtection passwordProtection = new PasswordProtection(passphrase, DEFAULT_PROTECTION_ALGORITHM, null);
-			final KeyStore keyStore = KeyStore.getInstance(DEFAULT_KEY_STORE_TYPE);
-			keyStore.setEntry(PRIVATE_KEY_ALIAS, privateKeyEntry, passwordProtection);
-			keyStore.store(fos, passphrase);
-			return keyPair;
-		} catch (final Exception exception) {
-			throw new RuntimeException(exception);
-		}
+		throw new RuntimeCryptoException("*createKeyStore* Not implemented");
+
+//		try (FileOutputStream fos = new FileOutputStream(filename)){
+//			final CryptoKeyPair keyPair = new CryptoKeyPair();
+//			final Certificate[] certificates = new Certificate[]{ createCertificate(keyPair.getPublic(), keyPair.getPrivate()) };
+//			final PrivateKeyEntry privateKeyEntry = new PrivateKeyEntry(keyPair.getPrivate(), certificates);
+//			final PasswordProtection passwordProtection = new PasswordProtection(passphrase, DEFAULT_PROTECTION_ALGORITHM, null);
+//			final KeyStore keyStore = KeyStore.getInstance(DEFAULT_KEY_STORE_TYPE);
+//			keyStore.setEntry(PRIVATE_KEY_ALIAS, privateKeyEntry, passwordProtection);
+//			keyStore.store(fos, passphrase);
+//			return keyPair;
+//		} catch (final Exception exception) {
+//			throw new RuntimeException(exception);
+//		}
 	}
 
 	public static KeyPair loadKey(final char[] passphrase) {

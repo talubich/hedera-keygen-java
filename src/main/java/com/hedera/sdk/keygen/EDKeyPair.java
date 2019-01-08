@@ -15,6 +15,8 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
+import org.bouncycastle.util.encoders.Hex;
+
 public class EDKeyPair extends AbstractKeyPair {
 
 	private EdDSAPrivateKey edPrivateKey;
@@ -24,10 +26,12 @@ public class EDKeyPair extends AbstractKeyPair {
 		final EdDSAParameterSpec spec = getEdDSAParameterSpec();
 		final EdDSAPrivateKeySpec privateKeySpec = new EdDSAPrivateKeySpec(seed, spec);
 		this.edPrivateKey = new EdDSAPrivateKey(privateKeySpec);
-		this.privateKey = edPrivateKey.geta();
+		this.secretKey = edPrivateKey.geta();
+		this.privKey = edPrivateKey;
 		final EdDSAPublicKeySpec pubKeySpec = new EdDSAPublicKeySpec(privateKeySpec.getA(), spec);
 		this.edPublicKey = new EdDSAPublicKey(pubKeySpec);
 		this.publicKey = edPublicKey.getAbyte();
+		this.pubKey = edPublicKey;
 	}
 
 	public EDKeyPair(final byte[] publicKey, final byte[] privateKey) {
@@ -35,9 +39,11 @@ public class EDKeyPair extends AbstractKeyPair {
 			final PKCS8EncodedKeySpec encodedPrivKey = new PKCS8EncodedKeySpec(privateKey);
 			final X509EncodedKeySpec encodedPubKey = new X509EncodedKeySpec(publicKey);
 			this.edPrivateKey = new EdDSAPrivateKey(encodedPrivKey);
-			this.privateKey = edPrivateKey.geta();
+			this.secretKey = edPrivateKey.geta();
+			this.privKey = edPrivateKey;
 			this.edPublicKey = new EdDSAPublicKey(encodedPubKey);
 			this.publicKey = edPublicKey.getAbyte();
+			this.pubKey = edPublicKey;
 		} catch (final InvalidKeySpecException e) {
 			throw new RuntimeException(e);
 		}
@@ -62,30 +68,59 @@ public class EDKeyPair extends AbstractKeyPair {
 			final X509EncodedKeySpec encodedPubKey = new X509EncodedKeySpec(publicKey);
 			this.edPublicKey = new EdDSAPublicKey(encodedPubKey);
 			this.publicKey = edPublicKey.getAbyte();
+			this.pubKey = this.edPublicKey;
 		} catch (final InvalidKeySpecException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	@Override
-	public PrivateKey getPrivateKey() {
+	public byte[] getSecretKey() {
+		return this.edPrivateKey.getAbyte();
+	}
+	@Override
+	public PrivateKey getSecret() {
 		return this.edPrivateKey;
+	}
+	@Override
+	public String getSecretKeyHex() {
+		return Hex.toHexString(this.edPrivateKey.getAbyte());
+	}
+	@Override
+	public byte[] getSecretKeyEncoded() {
+		return this.edPrivateKey.getEncoded();
+	}
+	@Override
+	public String getSecretKeyEncodedHex() {
+		return Hex.toHexString(this.edPrivateKey.getEncoded());
 	}
 
 	@Override
-	public PublicKey getPublicKey() {
+	public PublicKey getPublic() {
 		return this.edPublicKey;
 	}
-
+	@Override
+	public byte[] getPublicKey() {
+		return this.edPublicKey.getAbyte();
+	}
+	@Override
+	public String getPublicKeyHex() {
+		return Hex.toHexString(this.edPublicKey.getAbyte());
+	}
+	@Override
 	public byte[] getPublicKeyEncoded() {
 		return this.edPublicKey.getEncoded();
+	}
+	@Override
+	public String getPublicKeyEncodedHex() {
+		return Hex.toHexString(this.edPublicKey.getEncoded());
 	}
 
 	public void setSecretKey(final byte[] secretKey) {
 		try {
-			final PKCS8EncodedKeySpec encodedPrivKey = new PKCS8EncodedKeySpec(privateKey);
+			final PKCS8EncodedKeySpec encodedPrivKey = new PKCS8EncodedKeySpec(secretKey);
 			this.edPrivateKey = new EdDSAPrivateKey(encodedPrivKey);
-			this.privateKey = edPrivateKey.getEncoded();
+			this.privKey = edPrivateKey;
 		} catch (final InvalidKeySpecException e) {
 			throw new RuntimeException(e);
 		}
