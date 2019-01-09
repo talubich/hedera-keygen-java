@@ -55,7 +55,7 @@ public class EDKeyPair extends AbstractKeyPair {
 			final PKCS8EncodedKeySpec encodedPrivKey = new PKCS8EncodedKeySpec(privateKey);
 			edKeyPair.edPrivateKey = new EdDSAPrivateKey(encodedPrivKey);
 			edKeyPair.edPublicKey = new EdDSAPublicKey(
-					new EdDSAPublicKeySpec(edKeyPair.edPrivateKey.getAbyte(), getEdDSAParameterSpec()));
+					new EdDSAPublicKeySpec(edKeyPair.edPrivateKey.geta(), getEdDSAParameterSpec()));
 			return edKeyPair;
 		} catch (final Exception exception) {
 			throw new RuntimeException(exception);
@@ -76,7 +76,7 @@ public class EDKeyPair extends AbstractKeyPair {
 
 	@Override
 	public byte[] getSecretKey() {
-		return this.edPrivateKey.getAbyte();
+		return this.edPrivateKey.geta();
 	}
 	@Override
 	public PrivateKey getSecret() {
@@ -84,7 +84,7 @@ public class EDKeyPair extends AbstractKeyPair {
 	}
 	@Override
 	public String getSecretKeyHex() {
-		return Hex.toHexString(this.edPrivateKey.getAbyte());
+		return Hex.toHexString(this.edPrivateKey.geta());
 	}
 	@Override
 	public byte[] getSecretKeyEncoded() {

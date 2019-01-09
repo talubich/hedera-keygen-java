@@ -72,25 +72,23 @@ public class KeyStoreGen {
 
 	private static final int ONE_HUNDRED_YEARS_IN_DAYS = 24 * 365 * 100;
 
-	public static CryptoKeyPair createKeyStore(final char[] passphrase) {
-		return createKeyStore(passphrase, DEFAULT_KEY_STORE_FILE_NAME);
+	public static CryptoKeyPair createKeyStore(final char[] passphrase, int index) {
+		return createKeyStore(passphrase, DEFAULT_KEY_STORE_FILE_NAME, index);
 	}
 
-	public static CryptoKeyPair createKeyStore(final char[] passphrase, final String filename) {
-		throw new RuntimeCryptoException("*createKeyStore* Not implemented");
-
-//		try (FileOutputStream fos = new FileOutputStream(filename)){
-//			final CryptoKeyPair keyPair = new CryptoKeyPair();
-//			final Certificate[] certificates = new Certificate[]{ createCertificate(keyPair.getPublic(), keyPair.getPrivate()) };
-//			final PrivateKeyEntry privateKeyEntry = new PrivateKeyEntry(keyPair.getPrivate(), certificates);
-//			final PasswordProtection passwordProtection = new PasswordProtection(passphrase, DEFAULT_PROTECTION_ALGORITHM, null);
-//			final KeyStore keyStore = KeyStore.getInstance(DEFAULT_KEY_STORE_TYPE);
-//			keyStore.setEntry(PRIVATE_KEY_ALIAS, privateKeyEntry, passwordProtection);
-//			keyStore.store(fos, passphrase);
-//			return keyPair;
-//		} catch (final Exception exception) {
-//			throw new RuntimeException(exception);
-//		}
+	public static CryptoKeyPair createKeyStore(final char[] passphrase, final String filename, int index) {
+		try (FileOutputStream fos = new FileOutputStream(filename)){
+			final CryptoKeyPair keyPair = new CryptoKeyPair(index);
+			final Certificate[] certificates = new Certificate[]{ createCertificate(keyPair.getPublic(), keyPair.getPrivate()) };
+			final PrivateKeyEntry privateKeyEntry = new PrivateKeyEntry(keyPair.getPrivate(), certificates);
+			final PasswordProtection passwordProtection = new PasswordProtection(passphrase, DEFAULT_PROTECTION_ALGORITHM, null);
+			final KeyStore keyStore = KeyStore.getInstance(DEFAULT_KEY_STORE_TYPE);
+			keyStore.setEntry(PRIVATE_KEY_ALIAS, privateKeyEntry, passwordProtection);
+			keyStore.store(fos, passphrase);
+			return keyPair;
+		} catch (final Exception exception) {
+			throw new RuntimeException(exception);
+		}
 	}
 
 	public static KeyPair loadKey(final char[] passphrase) {

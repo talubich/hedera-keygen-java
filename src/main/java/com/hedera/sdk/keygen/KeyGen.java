@@ -11,8 +11,6 @@ public final class KeyGen {
 	}
 
 	public static void main(String[] args) {
-		String keyType = "ED25519";
-		
 		String seed = "";
 		int index = -1;
 		List<String> recoveryWords = new ArrayList<String>();
@@ -69,6 +67,9 @@ public final class KeyGen {
 		byte[] seedBytes = null;
 
 		if (recoveryWords.size() == 22) {
+			if (!seed.equals("")) {
+				System.out.println("*** Recovery words provided, ignoring seed parameter.");
+			}
 			// recover key from words
 			try {
 				CryptoKeyPair keyPair = new CryptoKeyPair(recoveryWords, index);
