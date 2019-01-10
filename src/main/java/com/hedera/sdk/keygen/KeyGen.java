@@ -45,6 +45,10 @@ public final class KeyGen {
 				for (int word = 0; word < array.length; word++) {
 					recoveryWords.add(array[word]);
 				}
+				if (recoveryWords.size() != 22) {
+					System.out.println("Invalid recovery word count - should be 22, got " + recoveryWords.size());
+					System.exit(3);
+				}
 				break;
 			default:
 				System.out.println("Invalid input parameters");
@@ -66,6 +70,7 @@ public final class KeyGen {
 
 		byte[] seedBytes = null;
 
+		
 		if (recoveryWords.size() == 22) {
 			if (!seed.equals("")) {
 				System.out.println("*** Recovery words provided, ignoring seed parameter.");
