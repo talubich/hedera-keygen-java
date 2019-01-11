@@ -4,6 +4,16 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bouncycastle.util.encoders.Hex;
+
+import com.google.common.io.BaseEncoding;
+
+import net.i2p.crypto.eddsa.EdDSAPrivateKey;
+import net.i2p.crypto.eddsa.EdDSAPublicKey;
+import net.i2p.crypto.eddsa.spec.EdDSANamedCurveTable;
+import net.i2p.crypto.eddsa.spec.EdDSAPrivateKeySpec;
+import net.i2p.crypto.eddsa.spec.EdDSAPublicKeySpec;
+
 public final class KeyGen {
 
 	private final static void printStars() {
@@ -13,7 +23,7 @@ public final class KeyGen {
 	public static void main(String[] args) {
 		String seed = "";
 		int index = -1;
-		List<String> recoveryWords = new ArrayList<String>();
+		String wordList = "";
 
 		for (int i=0; i<args.length; i++) {
 			// remove all spaces from parameter
@@ -42,16 +52,14 @@ public final class KeyGen {
 				break;
 			case "-words":
 				String[] array = value.split(",");
-				for (int word = 0; word < array.length; word++) {
-					recoveryWords.add(array[word]);
-				}
-				if (recoveryWords.size() != 22) {
-					System.out.println("Invalid recovery word count - should be 22, got " + recoveryWords.size());
+				if (array.length != 22) {
+					System.out.println("Invalid recovery word count - should be 22, got " + array.length);
 					System.exit(3);
 				}
+				wordList = value.replaceAll(",", " ");
 				break;
 			default:
-				System.out.println("Invalid input parameters");
+				System.out.println("Invalid input parameter(s) - " + param);
 				System.out.println("Should be");
 				System.out.println("* no parameters - generates an ED25519 key at index -1");
 				System.out.println("* -index=indexvalue - generates an ED25519 key at index indexvalue, must be greater than or equal to -1");
@@ -69,51 +77,55 @@ public final class KeyGen {
 		}
 
 		byte[] seedBytes = null;
+		Reference referenceSeed = new Reference(CryptoUtils.getSecureRandomData(32));
 
 		
-		if (recoveryWords.size() == 22) {
+		if (!wordList.equals("")) {
 			if (!seed.equals("")) {
 				System.out.println("*** Recovery words provided, ignoring seed parameter.");
 			}
 			// recover key from words
-			try {
-				CryptoKeyPair keyPair = new CryptoKeyPair(recoveryWords, index);
-				printStars();
-				System.out.println(String.format("Your recovered key pair for index %d is:", index));
-				System.out.println(String.format("Public key: %s", keyPair.getPublicKeyHex()));
-				System.out.println(String.format("(Encoded) %s", keyPair.getPublicKeyEncodedHex()));
-				System.out.println(String.format("Secret key: %s", keyPair.getSecretKeyHex()));
-				System.out.println(String.format("(Encoded) %s", keyPair.getSecretKeyEncodedHex()));
-				printStars();
-			} catch (NoSuchAlgorithmException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
+			referenceSeed = new Reference(wordList);
+			System.out.println(String.format("Your recovered key pair for index %d is:", index));
 		} else {
-			// generating new key
-			if (!seed.equals("")) {
-				// build up the seed byte array
-				seedBytes = seed.getBytes();
-			}
-			CryptoKeyPair keyPair = new CryptoKeyPair(seedBytes, index);
-			printStars();
-			System.out.println(String.format("Your key pair for index %d is:", index));
-			System.out.println(String.format("Public key: %s", keyPair.getPublicKeyHex()));
-			System.out.println(String.format("(Encoded) %s", keyPair.getPublicKeyEncodedHex()));
-			System.out.println(String.format("Secret key: %s", keyPair.getSecretKeyHex()));
-			System.out.println(String.format("(Encoded) %s", keyPair.getSecretKeyEncodedHex()));
-			System.out.println("Recovery word list:");
-			List<String> recovery = keyPair.recoveryWordsList();
-			for (int i=0; i<recovery.size(); i++) {
-				System.out.print(recovery.get(i));
-				if (i<recovery.size()-1) {
-					System.out.print(",");
-				}
-			}
-			System.out.println("");
-//			System.out.println(keyPair.recoveryWordsList());
-			printStars();
+			System.out.println(String.format("Your generated key pair for index %d is:", index));
 		}
+
+		KeyChain keyChain = new EDKeyChain(referenceSeed);
+		KeyPair keyPair = keyChain.keyAtIndex(index);
+		
+		printStars();
+		System.out.println(String.format("Public key      : %s", bytesToString(keyPair.getPublicKey())));
+		System.out.println(String.format("Public key(enc) : %s", keyPair.getPublicKeyEncodedHex()));
+		System.out.println("");
+		System.out.println(String.format("Secret key      : %s", bytesToString(keyPair.getPrivateKey())));
+		System.out.println(String.format("Secret key(enc) : %s", keyPair.getPrivateKeyEncodedHex()));
+		System.out.println("");
+		System.out.println(String.format("Combined        : %s", bytesToString(keyPair.getPrivateAndPublicKey())));
+		if (wordList.equals("")) {
+			// not recovering, show recovery word list
+			System.out.println("");
+			System.out.println(referenceSeed.toWords("Recovery words  : ", ",", ",", ",", ",", ",", ""));
+		}
+		printStars();
+		
+		// tests
+		EdDSAPrivateKey edPrivateKey;
+		EdDSAPublicKey edPublicKey;
+
+		EdDSAPublicKeySpec encodedPubKey = new EdDSAPublicKeySpec(keyPair.getPublicKey(), EdDSANamedCurveTable.ED_25519_CURVE_SPEC);
+		edPublicKey = new EdDSAPublicKey(encodedPubKey);
+		System.out.println(Hex.toHexString(edPublicKey.getAbyte()));
+		System.out.println(Hex.toHexString(edPublicKey.getEncoded()));
+		
+		EdDSAPrivateKeySpec encodedPrivKey = new EdDSAPrivateKeySpec(keyPair.getPrivateKey(), EdDSANamedCurveTable.ED_25519_CURVE_SPEC);
+		edPrivateKey = new EdDSAPrivateKey(encodedPrivKey);
+		System.out.println(Hex.toHexString(edPrivateKey.geta()));
+		System.out.println(Hex.toHexString(edPrivateKey.getEncoded()));
+
 	}
+	
+    private static String bytesToString(byte[] bytes) {
+        return BaseEncoding.base16().lowerCase().encode(bytes);
+    }
 }
