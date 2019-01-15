@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.hedera</groupId>
@@ -20,7 +20,7 @@
 
 
 	<dependencies>
-		<!-- Java 6 = JAX-B Version 2.0   -->
+		<!-- Java 6 = JAX-B Version 2.0 -->
 		<!-- Java 7 = JAX-B Version 2.2.3 -->
 		<!-- Java 8 = JAX-B Version 2.2.8 -->
 		<dependency>
@@ -29,12 +29,16 @@
 			<version>0.3.0</version>
 		</dependency>
 
-		<!--<dependency>-->
-			<!--<groupId>com.madgag.spongycastle</groupId>-->
-			<!--<artifactId>core</artifactId>-->
-			<!--<version>1.58.0.0</version>-->
-		<!--</dependency>-->
-
+		<!--<dependency> -->
+		<!--<groupId>com.madgag.spongycastle</groupId> -->
+		<!--<artifactId>core</artifactId> -->
+		<!--<version>1.58.0.0</version> -->
+		<!--</dependency> -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>18.0</version>
+		</dependency>
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk15on</artifactId>
@@ -83,14 +87,14 @@
 						</excludes>
 					</artifactSet>
 					<filters>
-				        <filter>
-				            <artifact>*:*</artifact>
-				            <excludes>
-				                <exclude>META-INF/*.SF</exclude>
-				                <exclude>META-INF/*.DSA</exclude>
-				                <exclude>META-INF/*.RSA</exclude>
-				            </excludes>
-				        </filter>
+						<filter>
+							<artifact>*:*</artifact>
+							<excludes>
+								<exclude>META-INF/*.SF</exclude>
+								<exclude>META-INF/*.DSA</exclude>
+								<exclude>META-INF/*.RSA</exclude>
+							</excludes>
+						</filter>
 					</filters>
 				</configuration>
 				<executions>

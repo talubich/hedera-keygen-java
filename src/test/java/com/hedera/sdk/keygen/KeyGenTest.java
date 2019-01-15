@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,21 +22,30 @@ public class KeyGenTest {
 	@Test
 	public void create() throws NoSuchAlgorithmException, IOException, OperatorCreationException, PKCSException {
 		// index -1
-		final CryptoKeyPair cryptoKeyPair = new CryptoKeyPair(-1);
+		byte[] seedBytes = null;
+		Reference referenceSeed = new Reference(CryptoUtils.getSecureRandomData(32));
+		KeyChain keyChain = new EDKeyChain(referenceSeed);
+		KeyPair cryptoKeyPair = keyChain.keyAtIndex(-1);
+
 		// check private and public are different
 		assertFalse(Arrays.equals(cryptoKeyPair.getPrivateKey(), cryptoKeyPair.getPublicKey()));
 		// get word list
-		String[] words = cryptoKeyPair.recoveryWordsArray();
+		List<String> words = referenceSeed.lowercasedWords();
 		// check length
-		assertEquals(22, words.length);
+		assertEquals(22, words.size());
+
+		Seed seed = Seed.fromWordList(words);
+		referenceSeed = new Reference(seed.toBytes());
+		keyChain = new EDKeyChain(referenceSeed);
+		KeyPair cryptoRecoveredKeyPair = keyChain.keyAtIndex(-1);
 		
-		final CryptoKeyPair cryptoRecoveredKeyPair = new CryptoKeyPair(words, -1);
 		// check private/public as the same as origin
 		assertArrayEquals(cryptoKeyPair.getPublicKey(), cryptoRecoveredKeyPair.getPublicKey());
 		assertArrayEquals(cryptoKeyPair.getPrivateKey(), cryptoRecoveredKeyPair.getPrivateKey());
 
 		// check different index results in different keys
-		final CryptoKeyPair cryptoRecoveredKeyPairOtherIndex = new CryptoKeyPair(words, 0);
+		KeyPair cryptoRecoveredKeyPairOtherIndex = keyChain.keyAtIndex(0);
+
 		assertFalse(Arrays.equals(cryptoRecoveredKeyPair.getPublicKey(), cryptoRecoveredKeyPairOtherIndex.getPublicKey()));
 		assertFalse(Arrays.equals(cryptoRecoveredKeyPair.getPrivateKey(), cryptoRecoveredKeyPairOtherIndex.getPrivateKey()));
 	}
