@@ -28,40 +28,59 @@ public class EDKeyPair implements KeyPair {
     }
 
     @Override
-    public byte[] getPrivateAndPublicKey() {
-        byte[] seed = privateKey.getSeed();
-        byte[] publicKey = getPublicKey();
+    public byte[] getSeedAndPublicKey() {
+        byte[] seed = this.privateKey.getSeed();
+        byte[] publicKey = this.getPublicKey();
 
         byte[] key = new byte[seed.length + publicKey.length];
         System.arraycopy(seed, 0, key, 0, seed.length);
         System.arraycopy(publicKey, 0, key, seed.length, publicKey.length);
         return key;
     }
-
+    @Override
+    public String getSeedAndPublicKeyHex() {
+        return Hex.toHexString(this.getSeedAndPublicKey());
+    }
     @Override
     public byte[] getPrivateKey() {
-        return privateKey.getSeed();
-   }
+        return this.privateKey.geta();
+    }
+    @Override
+    public String getPrivateKeyHex() {
+        return Hex.toHexString(this.getPrivateKey());
+    }
+    @Override
+    public byte[] getPrivateKeySeed() {
+        return this.privateKey.getSeed();
+    }
+    @Override
+    public String getPrivateKeySeedHex() {
+        return Hex.toHexString(this.getPrivateKeySeed());
+    }
     @Override
     public byte[] getPrivateKeyEncoded() {
-        return privateKey.getEncoded();
-   }
+        return this.privateKey.getEncoded();
+    }
     @Override
     public String getPrivateKeyEncodedHex() {
-        return Hex.toHexString(privateKey.getEncoded());
+        return Hex.toHexString(this.getPrivateKeyEncoded());
    }
 
     @Override
     public byte[] getPublicKey() {
-        return publicKey.getAbyte();
+        return this.publicKey.getAbyte();
+    }
+    @Override
+    public String getPublicKeyHex() {
+        return Hex.toHexString(this.getPublicKey());
     }
     @Override
     public byte[] getPublicKeyEncoded() {
-        return publicKey.getEncoded();
+        return this.publicKey.getEncoded();
     }
     @Override
     public String getPublicKeyEncodedHex() {
-        return Hex.toHexString(publicKey.getEncoded());
+        return Hex.toHexString(this.getPublicKeyEncoded());
     }
 
     @Override

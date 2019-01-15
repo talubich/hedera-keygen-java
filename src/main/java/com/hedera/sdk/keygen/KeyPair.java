@@ -5,9 +5,14 @@ public interface KeyPair {
     byte[] getPublicKey();
     byte[] signMessage(byte[] message);
     boolean verifySignature(byte[] message, byte[] signature);
-	byte[] getPrivateAndPublicKey();
+	byte[] getSeedAndPublicKey();
 	byte[] getPrivateKeyEncoded();
 	byte[] getPublicKeyEncoded();
 	String getPrivateKeyEncodedHex();
 	String getPublicKeyEncodedHex();
+	byte[] getPrivateKeySeed();
+	String getPrivateKeySeedHex();
+	String getPrivateKeyHex();
+	String getPublicKeyHex();
+	String getSeedAndPublicKeyHex();
 }

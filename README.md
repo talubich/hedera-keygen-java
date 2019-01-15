@@ -7,56 +7,108 @@ The .jar file can be found in the ```target``` folder of this project.
 
 The project was developed under Java version 10.
 
+# Version
+
+This project is currently at version 1.1
+
 # Invoking the utility
+
 The utility is a Java .jar file which is invoked as follows
-```java -jar sdk-keygen-1.0.jar``` followed by optional parameters
 
-# Examples
-## Generate a new ED25519 key pair
+```java -jar sdk-keygen-1.1.jar``` followed by optional parameters
 
-```java -jar sdk-keygen-1.0.jar```
+**The above would output the following**
 
-**Outputs**
+Your generated key pair for index -1 is:
+************************************************************************
+Public key (hex)     : 2cda7382a63419894104f311f3eb2377cdb3d1f4367758aa85571b2318bb3b7c
+Public key (enc hex) : 302a300506032b65700321002cda7382a63419894104f311f3eb2377cdb3d1f4367758aa85571b2318bb3b7c
 
-Your key pair is:
+Secret key (hex)     : 3326c5b13a2871c022997c39065be6f752be2b62accb98fa0d64f26df07dcd74
+Secret key (enc hex) : 302e020100300506032b6570042204203326c5b13a2871c022997c39065be6f752be2b62accb98fa0d64f26df07dcd74
 
-Public key:302a300506032b6570032100c524ba740fe0dc66a777ea3449b92f1460e5a52fc791b2f2f60f45ef4374d6ca
+Seed+PubKey          : 3326c5b13a2871c022997c39065be6f752be2b62accb98fa0d64f26df07dcd742cda7382a63419894104f311f3eb2377cdb3d1f4367758aa85571b2318bb3b7c
 
-Secret key:302e020100300506032b657004220420532f40994983eb3da5cbf177fb62e7478bbcd40c91d2b1671a2b64df1a9f755c
+Recovery words  : pledge,bumpy,newly,runway,wrist,vicar,tower,extra,church,item,murder,rush,mare,show,rhino,dress,three,immune,issue,forest,roar,trout
+************************************************************************
 
-Recovery word list:
+# Utility outputs
 
-[void, ace, nice, pick, plea, about, dean, list, far, bench, flair, alone, serene, attach, spiky, target, mania, devour, hoard, climb, all, forbid]
+The utility outputs:
+- a public key as a Hex String (EdDSAPublicKey.getAByte() to HEX)
+- the same public key in its canonical encoding as a hex string (EdDSAPublicKey.getEncoded() to HEX)
+- a secret key as a Hex String (EdDSAPrivateKey.getSeed() to HEX)
+- a secret key in its canonical encoding as a hex string (EdDSAPrivateKey.getEncoded() to HEX)
+- the private key seed and public key combined (SuperCop format)
+- optionally a comma separated list of 22 recovery words
 
-## Generate a new ED25519 key pair from a supplied seed
-*Note, the same seed always returns the same key pair. The seed must be 32 digits.*
+# Optional Input parameters
+Although it will run without input parameters, the utility accepts a number of input parameters as follows.
 
-```java -jar sdk-keygen-1.0.jar 01234567890123456789012345678901```
+## index
+This allows you to specify the index for which you want the key generated. Hedera Wallets currently use index 0, so if you need to recover a Hedera Wallet key using this utility, specify an index of 0. The default index value is not provided is -1.
 
-**Outputs**
+Example ```java -jar sdk-keygen-1.1.jar -index=0```
 
-Your key pair is:
+**outputs**
 
-Public key:302a300506032b65700321002836a6e37ad02dbaee1b37c466b2ef91e593a2e77051a8ab05d21a492846d4da
+Your generated key pair for index 0 is:
+************************************************************************
+Public key (hex)     : 46613dfb55c99d8cadd7ebdad7faf944cbc40e941efc61f7f61dda84cbf9e64d
+Public key (enc hex) : 302a300506032b657003210046613dfb55c99d8cadd7ebdad7faf944cbc40e941efc61f7f61dda84cbf9e64d
 
-Secret key:302e020100300506032b6570042204207c58cb49897700f4ca89c86cf23f23a65f33a75210fa6baf05a40728dcecb44c
+Secret key (hex)     : 263d4dc53786aecff818d4e56b4e4df14262b4e8054a515b072a97d148c2db2f
+Secret key (enc hex) : 302e020100300506032b657004220420263d4dc53786aecff818d4e56b4e4df14262b4e8054a515b072a97d148c2db2f
 
-Recovery word list:
+Seed+PubKey          : 263d4dc53786aecff818d4e56b4e4df14262b4e8054a515b072a97d148c2db2f46613dfb55c99d8cadd7ebdad7faf944cbc40e941efc61f7f61dda84cbf9e64d
 
-[moss, boast, namely, ever, nobody, Korea, offend, anyway, mutant, defect, never, Henry, oasis, obtain, muck, chord, nearer, furry, notify, meal, moss, bonnet]
+Recovery words  : quiet,darn,taste,cross,unable,major,sunny,lens,upturn,daisy,junk,glance,chord,dome,about,woody,help,garden,skill,alert,fight,socket
+************************************************************************
 
-## Recover a key pair from the supplied word list.
-*Note, the list must be 22 words long, separated by spaces. If the word list is incorrect, an error may be raised.*
+## seed
+This enables you to provide your own seed if you do not trust your OS's entropy
+*Note, the same seed always returns the same key pair. The seed must be 64 hex encoded bytes.*
 
-```java -jar sdk-keygen-1.0.jar moss boast namely ever nobody Korea offend anyway mutant defect never Henry oasis obtain muck chord nearer furry notify meal moss bonnet```
+Example ```java -jar sdk-keygen-1.1.jar -seed=0123456789012345678901234567890101234567890123456789012345678901```
 
-**Outputs**
+**outputs**
 
-Your recovered key pair is:
+Your generated key pair for index -1 and own seed is:
+************************************************************************
+Public key (hex)     : 2b2e7b3196c55c0cd13f1b664fe41502ca599fbfbd47b38b5ef99867c4a84259
+Public key (enc hex) : 302a300506032b65700321002b2e7b3196c55c0cd13f1b664fe41502ca599fbfbd47b38b5ef99867c4a84259
 
-Public key:302a300506032b65700321002836a6e37ad02dbaee1b37c466b2ef91e593a2e77051a8ab05d21a492846d4da
+Secret key (hex)     : 9b59be42cd59f846e237f463939f3d8c12eac74aaedbb1541bedb731d4a87085
+Secret key (enc hex) : 302e020100300506032b6570042204209b59be42cd59f846e237f463939f3d8c12eac74aaedbb1541bedb731d4a87085
 
-Secret key:302e020100300506032b6570042204207c58cb49897700f4ca89c86cf23f23a65f33a75210fa6baf05a40728dcecb44c
+Seed+PubKey          : 9b59be42cd59f846e237f463939f3d8c12eac74aaedbb1541bedb731d4a870852b2e7b3196c55c0cd13f1b664fe41502ca599fbfbd47b38b5ef99867c4a84259
+
+Recovery words  : diary,tomb,Gandhi,easily,brush,Mafia,regal,script,kind,prison,dictum,script,kind,prison,diary,tomb,Gandhi,easily,brush,Mafia,regal,senior
+************************************************************************
+
+
+## words
+Enables you to provide a list of words (comma separated and no spaces in between) to recover a key pair from.
+
+Example ```java -jar sdk-keygen-1.1.jar -words=tend,stale,grace,brim,input,streak,convoy,farce,Norway,left,tiger,kite,idle,mile,warp,ice,canvas,terse,mourn,nobody,thigh,Lucy```
+
+**outputs**
+
+Your recovered key pair for index -1 is:
+************************************************************************
+Public key (hex)     : 37c50353fc9bca8f3fa610c63624a59a7ebaf16c05fad2d30e3588f21555edbd
+Public key (enc hex) : 302a300506032b657003210037c50353fc9bca8f3fa610c63624a59a7ebaf16c05fad2d30e3588f21555edbd
+
+Secret key (hex)     : 9dd3cf5a07ddd826c56955bd5cf10247af23d3d1332331d179092d291e313fd5
+Secret key (enc hex) : 302e020100300506032b6570042204209dd3cf5a07ddd826c56955bd5cf10247af23d3d1332331d179092d291e313fd5
+
+Seed+PubKey          : 9dd3cf5a07ddd826c56955bd5cf10247af23d3d1332331d179092d291e313fd537c50353fc9bca8f3fa610c63624a59a7ebaf16c05fad2d30e3588f21555edbd
+************************************************************************
+
+## Combining parameters
+
+You can combine -index and -words or -index and -seed, however if you provide -words and -seed, the seed parameter will be ignored.
 
 ## Note about compatibility with the Hedera Wallet
-Key recovery isn't designed to enable a wallet-generated key to be recovered with this utility, please use the wallet application to recover a key generated in the wallet application.
+
+Key recovery from words will be compatible with the wallet-generated key *if you supply an index of 0*

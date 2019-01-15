@@ -45,8 +45,8 @@ public final class KeyGen {
 				break;
 			case "-seed":
 				seed = value;
-				if (seed.length() != 32) {
-					System.out.println("Seed length must be 32 bytes for ED25519 (not hex encoded)");
+				if (seed.length() != 64) {
+					System.out.println("Seed length must be 64 hex encoded bytes for ED25519");
 					System.exit(3);
 				}
 				break;
@@ -63,7 +63,7 @@ public final class KeyGen {
 				System.out.println("Should be");
 				System.out.println("* no parameters - generates an ED25519 key at index -1");
 				System.out.println("* -index=indexvalue - generates an ED25519 key at index indexvalue, must be greater than or equal to -1");
-				System.out.println("* -seed=seedvalue - 32 bytes to seed the key generation with");
+				System.out.println("* -seed=seedvalue - 64 hex encoded bytes to seed the key generation with");
 				System.out.println("* -words=22 recovery words separated by commas");
 				System.out.println("Example: -index=-1 -words=word1,word2,word3...,word22");
 				System.out.println("Note");
@@ -76,9 +76,7 @@ public final class KeyGen {
 			}
 		}
 
-		byte[] seedBytes = null;
 		Reference referenceSeed = new Reference(CryptoUtils.getSecureRandomData(32));
-
 		
 		if (!wordList.equals("")) {
 			if (!seed.equals("")) {
@@ -87,6 +85,12 @@ public final class KeyGen {
 			// recover key from words
 			referenceSeed = new Reference(wordList);
 			System.out.println(String.format("Your recovered key pair for index %d is:", index));
+		} else if (!seed.equals("")) {
+			// recover key from seed
+			byte[] seedBytes = Hex.decode(seed);
+			referenceSeed = new Reference(seedBytes);
+			System.out.println(String.format("Your generated key pair for index %d and own seed is:", index));
+			
 		} else {
 			System.out.println(String.format("Your generated key pair for index %d is:", index));
 		}
@@ -95,37 +99,21 @@ public final class KeyGen {
 		KeyPair keyPair = keyChain.keyAtIndex(index);
 		
 		printStars();
-		System.out.println(String.format("Public key      : %s", bytesToString(keyPair.getPublicKey())));
-		System.out.println(String.format("Public key(enc) : %s", keyPair.getPublicKeyEncodedHex()));
+		System.out.println(String.format("Public key (hex)     : %s", keyPair.getPublicKeyHex()));
+		System.out.println(String.format("Public key (enc hex) : %s", keyPair.getPublicKeyEncodedHex()));
 		System.out.println("");
-		System.out.println(String.format("Secret key      : %s", bytesToString(keyPair.getPrivateKey())));
-		System.out.println(String.format("Secret key(enc) : %s", keyPair.getPrivateKeyEncodedHex()));
+//		System.out.println(String.format("Secret key (hex)     : %s", keyPair.getPrivateKeyHex()));
+		System.out.println(String.format("Secret key (hex)     : %s", keyPair.getPrivateKeySeedHex()));
+		System.out.println(String.format("Secret key (enc hex) : %s", keyPair.getPrivateKeyEncodedHex()));
 		System.out.println("");
-		System.out.println(String.format("Combined        : %s", bytesToString(keyPair.getPrivateAndPublicKey())));
+//		System.out.println(String.format("Secret Seed (hex)   : %s", keyPair.getPrivateKeySeedHex()));
+		System.out.println(String.format("Seed+PubKey (hex)    : %s", keyPair.getSeedAndPublicKeyHex()));
 		if (wordList.equals("")) {
 			// not recovering, show recovery word list
 			System.out.println("");
 			System.out.println(referenceSeed.toWords("Recovery words  : ", ",", ",", ",", ",", ",", ""));
 		}
 		printStars();
-		
-		// tests
-		EdDSAPrivateKey edPrivateKey;
-		EdDSAPublicKey edPublicKey;
-
-		EdDSAPublicKeySpec encodedPubKey = new EdDSAPublicKeySpec(keyPair.getPublicKey(), EdDSANamedCurveTable.ED_25519_CURVE_SPEC);
-		edPublicKey = new EdDSAPublicKey(encodedPubKey);
-		System.out.println(Hex.toHexString(edPublicKey.getAbyte()));
-		System.out.println(Hex.toHexString(edPublicKey.getEncoded()));
-		
-		EdDSAPrivateKeySpec encodedPrivKey = new EdDSAPrivateKeySpec(keyPair.getPrivateKey(), EdDSANamedCurveTable.ED_25519_CURVE_SPEC);
-		edPrivateKey = new EdDSAPrivateKey(encodedPrivKey);
-		System.out.println(Hex.toHexString(edPrivateKey.geta()));
-		System.out.println(Hex.toHexString(edPrivateKey.getEncoded()));
-
 	}
 	
-    private static String bytesToString(byte[] bytes) {
-        return BaseEncoding.base16().lowerCase().encode(bytes);
-    }
 }
