@@ -1,3 +1,6 @@
+# Maven build directory
+target/
+
 # Compiled class file
 *.class
 
@@ -21,16 +24,9 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
+# IDE specific config/settings files
 .vscode/
 .idea/
 *.iml
-target/maven-status/
-target/classes
-target/generated-sources
-target/generated-test-sources
-target/maven-archiver
-target/maven-status
-target/surefire-reports
-target/test-classes
 .classpath
 .settings/
