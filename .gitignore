@@ -34,3 +34,4 @@ target/surefire-reports
 target/test-classes
 .classpath
 .settings/
+/target/
