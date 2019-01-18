@@ -28,7 +28,7 @@ public class KeyGenTest {
 		KeyPair cryptoKeyPair = keyChain.keyAtIndex(-1);
 
 		// check private and public are different
-		assertFalse(Arrays.equals(cryptoKeyPair.getPrivateKey(), cryptoKeyPair.getPublicKey()));
+		assertFalse(Arrays.equals(cryptoKeyPair.getPrivateKeyBytes(), cryptoKeyPair.getPublicKeyBytes()));
 		// get word list
 		List<String> words = referenceSeed.lowercasedWords();
 		// check length
@@ -40,13 +40,13 @@ public class KeyGenTest {
 		KeyPair cryptoRecoveredKeyPair = keyChain.keyAtIndex(-1);
 		
 		// check private/public as the same as origin
-		assertArrayEquals(cryptoKeyPair.getPublicKey(), cryptoRecoveredKeyPair.getPublicKey());
-		assertArrayEquals(cryptoKeyPair.getPrivateKey(), cryptoRecoveredKeyPair.getPrivateKey());
+		assertArrayEquals(cryptoKeyPair.getPublicKeyBytes(), cryptoRecoveredKeyPair.getPublicKeyBytes());
+		assertArrayEquals(cryptoKeyPair.getPrivateKeyBytes(), cryptoRecoveredKeyPair.getPrivateKeyBytes());
 
 		// check different index results in different keys
 		KeyPair cryptoRecoveredKeyPairOtherIndex = keyChain.keyAtIndex(0);
 
-		assertFalse(Arrays.equals(cryptoRecoveredKeyPair.getPublicKey(), cryptoRecoveredKeyPairOtherIndex.getPublicKey()));
-		assertFalse(Arrays.equals(cryptoRecoveredKeyPair.getPrivateKey(), cryptoRecoveredKeyPairOtherIndex.getPrivateKey()));
+		assertFalse(Arrays.equals(cryptoRecoveredKeyPair.getPublicKeyBytes(), cryptoRecoveredKeyPairOtherIndex.getPublicKeyBytes()));
+		assertFalse(Arrays.equals(cryptoRecoveredKeyPair.getPrivateKeyBytes(), cryptoRecoveredKeyPairOtherIndex.getPrivateKeyBytes()));
 	}
 }

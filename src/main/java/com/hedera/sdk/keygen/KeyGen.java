@@ -27,7 +27,7 @@ public final class KeyGen {
 
 		for (int i=0; i<args.length; i++) {
 			// remove all spaces from parameter
-			String input = args[i].replaceAll(" ", "");
+			String input = args[i]; //.replaceAll(" ", "");
 			// get parameter and value
 			String[] paramValue = input.split("=");
 			// check there is a parameter/value pair
@@ -41,7 +41,12 @@ public final class KeyGen {
 			
 			switch (param) {
 			case "-index":
-				index = Integer.parseInt(value);
+				try {
+					index = Integer.parseInt(value);
+				} catch (NumberFormatException e) {
+			        System.err.println("Argument" + index + " must be an integer.");
+			        System.exit(3);
+			    }					
 				break;
 			case "-seed":
 				seed = value;
@@ -52,6 +57,9 @@ public final class KeyGen {
 				break;
 			case "-words":
 				String[] array = value.split(",");
+				if (array.length != 22) {
+					array = value.split(" ");
+				}
 				if (array.length != 22) {
 					System.out.println("Invalid recovery word count - should be 22, got " + array.length);
 					System.exit(3);
