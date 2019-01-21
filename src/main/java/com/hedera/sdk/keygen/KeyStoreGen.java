@@ -35,6 +35,7 @@ import org.bouncycastle.operator.OutputEncryptor;
 import org.bouncycastle.operator.bc.BcECContentSignerBuilder;
 import org.bouncycastle.pkcs.PKCS8EncryptedPrivateKeyInfo;
 import org.bouncycastle.pkcs.PKCSException;
+import org.bouncycastle.util.encoders.Hex;
 import org.bouncycastle.util.io.pem.PemObject;
 
 import java.io.FileInputStream;
@@ -71,15 +72,15 @@ public class KeyStoreGen {
 
 	private static final int ONE_HUNDRED_YEARS_IN_DAYS = 24 * 365 * 100;
 
-	public static KeyPair createKeyStore(final char[] passphrase, final Reference referenceSeed, final int index) {
-		return createKeyStore(passphrase, DEFAULT_KEY_STORE_FILE_NAME, referenceSeed, index);
+	public static KeyPair createKeyStore(final char[] passphrase, final KeyPair keyPair) {
+		return createKeyStore(passphrase, DEFAULT_KEY_STORE_FILE_NAME, keyPair);
 	}
 
-	public static KeyPair createKeyStore(final char[] passphrase, final String filename, final Reference referenceSeed, final int index) {
+	public static KeyPair createKeyStore(final char[] passphrase, String filename, final KeyPair keyPair) {
+		if (filename.equals("")) {
+			filename = DEFAULT_KEY_STORE_FILE_NAME;
+		}
 		try (FileOutputStream fos = new FileOutputStream(filename)){
-			KeyChain keyChain = new EDKeyChain(referenceSeed);
-			final KeyPair keyPair = keyChain.keyAtIndex(index);
-
 			final Certificate[] certificates = new Certificate[]{ createCertificate(keyPair.getPublicKey(), keyPair.getPrivateKey()) };
 			final PrivateKeyEntry privateKeyEntry = new PrivateKeyEntry(keyPair.getPrivateKey(), certificates);
 			final PasswordProtection passwordProtection = new PasswordProtection(passphrase, DEFAULT_PROTECTION_ALGORITHM, null);
@@ -96,7 +97,10 @@ public class KeyStoreGen {
 		return loadKey(passphrase, DEFAULT_KEY_STORE_FILE_NAME);
 	}
 
-	public static KeyPair loadKey(final char[] passphrase, final String filename) {
+	public static KeyPair loadKey(final char[] passphrase, String filename) {
+		if (filename.equals("")) {
+			filename = DEFAULT_KEY_STORE_FILE_NAME;
+		}
 		try (FileInputStream fis = new FileInputStream(filename)) {
 			final PasswordProtection passwordProtection = new PasswordProtection(passphrase,
 					DEFAULT_PROTECTION_ALGORITHM, null);
@@ -111,7 +115,9 @@ public class KeyStoreGen {
 
 	private static Certificate createCertificate(PublicKey publicKey, PrivateKey privateKey) throws IOException, OperatorCreationException, CertificateException {
 		final X500Name dn = new X500Name("CN=" + PRIVATE_KEY_ALIAS);
-		final AlgorithmIdentifier sigAlgId = new DefaultSignatureAlgorithmIdentifierFinder().find("SHA1withRSA");
+		System.out.println(publicKey.getAlgorithm());
+		System.out.println(privateKey.getAlgorithm());
+		final AlgorithmIdentifier sigAlgId = new DefaultSignatureAlgorithmIdentifierFinder().find("SHA1WITHDSA");
 		final AlgorithmIdentifier digAlgId = new DefaultDigestAlgorithmIdentifierFinder().find(sigAlgId);
 		final AsymmetricKeyParameter privateKeyAsymKeyParam = PrivateKeyFactory.createKey(privateKey.getEncoded());
 		final SubjectPublicKeyInfo subPubKeyInfo = SubjectPublicKeyInfo.getInstance(publicKey.getEncoded());
