@@ -15,7 +15,7 @@ This project is currently at version 1.1
 
 The utility is a Java .jar file which is invoked as follows
 
-```java -jar hedera-sdk-keygen-1.1.jar``` followed by optional parameters
+```java -jar hedera-sdk-keygen-1.2-run.jar``` followed by optional parameters
 
 **The above would output the following**
 
@@ -40,7 +40,7 @@ The utility outputs:
 - a secret key as a Hex String (EdDSAPrivateKey.getSeed() to HEX)
 - a secret key in its canonical encoding as a hex string (EdDSAPrivateKey.getEncoded() to HEX)
 - the private key seed and public key combined (SuperCop format)
-- optionally a comma separated list of 22 recovery words
+- optionally a comma or space (double quoted) separated list of 22 recovery words
 
 # Optional Input parameters
 Although it will run without input parameters, the utility accepts a number of input parameters as follows.
@@ -48,7 +48,7 @@ Although it will run without input parameters, the utility accepts a number of i
 ## index
 This allows you to specify the index for which you want the key generated. Hedera Wallets currently use index 0, so if you need to recover a Hedera Wallet key using this utility, specify an index of 0. The default index value is not provided is -1.
 
-Example ```java -jar hedera-sdk-keygen-1.1.jar -index=0```
+Example ```java -jar hedera-sdk-keygen-1.2-run.jar -index=0```
 
 **outputs**
 
@@ -69,7 +69,7 @@ Recovery words  : quiet,darn,taste,cross,unable,major,sunny,lens,upturn,daisy,ju
 This enables you to provide your own seed if you do not trust your OS's entropy
 *Note, the same seed always returns the same key pair. The seed must be 64 hex encoded bytes.*
 
-Example ```java -jar hedera-sdk-keygen-1.1.jar -seed=0123456789012345678901234567890101234567890123456789012345678901```
+Example ```java -jar hedera-sdk-keygen-1.2-run.jar -seed=0123456789012345678901234567890101234567890123456789012345678901```
 
 **outputs**
 
@@ -88,9 +88,11 @@ Recovery words  : diary,tomb,Gandhi,easily,brush,Mafia,regal,script,kind,prison,
 
 
 ## words
-Enables you to provide a list of words (comma separated and no spaces in between) to recover a key pair from.
+Enables you to provide a list of words (comma or space separated - remember to double quote space-separated lists) to recover a key pair from.
 
-Example ```java -jar hedera-sdk-keygen-1.1.jar -words=tend,stale,grace,brim,input,streak,convoy,farce,Norway,left,tiger,kite,idle,mile,warp,ice,canvas,terse,mourn,nobody,thigh,Lucy```
+Example ```java -jar hedera-sdk-keygen-1.2-run.jar -words=tend,stale,grace,brim,input,streak,convoy,farce,Norway,left,tiger,kite,idle,mile,warp,ice,canvas,terse,mourn,nobody,thigh,Lucy```
+
+Example ```java -jar hedera-sdk-keygen-1.2-run.jar -words="tend stale grace brim input streak convoy farce Norway left tiger kite idle mile warp ice canvas terse mourn nobody thigh Lucy"```
 
 **outputs**
 

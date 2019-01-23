@@ -92,8 +92,9 @@ public final class KeyGen {
 				System.out.println("* no parameters - generates an ED25519 key at index -1");
 				System.out.println("* -index=indexvalue - generates an ED25519 key at index indexvalue, must be greater than or equal to -1");
 				System.out.println("* -seed=seedvalue - 64 hex encoded bytes to seed the key generation with");
-				System.out.println("* -words=22 recovery words separated by commas");
+				System.out.println("* -words=22 recovery words separated by commas or spaces (if surrounded by double quotes)");
 				System.out.println("Example: -index=-1 -words=word1,word2,word3...,word22");
+				System.out.println("or     : -index=-1 -words=\"word1 word2 word3 ... word22\"");
 				System.out.println("Note");
 				System.out.println("* The -index parameter is optional, it defaults to -1, for Hedera Wallet Compliant key recovery use index 0");
 				System.out.println("* The -seed parameter is optional, a seed will be generated automatically if not supplied");
