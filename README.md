@@ -3,7 +3,7 @@ This project provides a command line level utility for generating ED25519 key pa
 A new private/public key pair can be generated from a system-generated random seed or a user-provided seed.
 It is also possible to recover an existing keypair from a recovery word list, see examples below.
 
-The .jar file can be found in the ```target``` folder of this project.
+The .jar file can be found in the ```root``` folder of this project.
 
 The project was developed under Java version 10.
 
