@@ -4,7 +4,7 @@
   <groupId>com.hedera</groupId>
   <artifactId>hedera-sdk-keygen</artifactId>
   <name>hedera-keygen-java</name>
-  <version>1.1</version>
+  <version>1.2</version>
   <url>https://www.hedera.com</url>
   <build>
     <plugins>
@@ -17,6 +17,10 @@
             <goals>
               <goal>shade</goal>
             </goals>
+            <configuration>
+              <outputDirectory>${project.basedir}</outputDirectory>
+              <shadedClassifierName />
+            </configuration>
           </execution>
         </executions>
         <configuration>

@@ -1,8 +1,11 @@
 package com.hedera.sdk.keygen;
 
+import java.security.PrivateKey;
+import java.security.PublicKey;
+
 public interface KeyPair {
-    byte[] getPrivateKey();
-    byte[] getPublicKey();
+    byte[] getPrivateKeyBytes();
+    byte[] getPublicKeyBytes();
     byte[] signMessage(byte[] message);
     boolean verifySignature(byte[] message, byte[] signature);
 	byte[] getSeedAndPublicKey();
@@ -15,4 +18,6 @@ public interface KeyPair {
 	String getPrivateKeyHex();
 	String getPublicKeyHex();
 	String getSeedAndPublicKeyHex();
+	PrivateKey getPrivateKey();
+	PublicKey getPublicKey();
 }
