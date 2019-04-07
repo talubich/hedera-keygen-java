@@ -5,7 +5,7 @@ import java.util.ResourceBundle;
 
 import org.bouncycastle.util.encoders.Hex;
 
-import com.hedera.sdk.keyUpdate.SetPublicKey;
+//import com.hedera.sdk.keyUpdate.SetPublicKey;
 import com.hedera.sdk.keygen.CryptoUtils;
 import com.hedera.sdk.keygen.EDKeyChain;
 import com.hedera.sdk.keygen.KeyChain;
