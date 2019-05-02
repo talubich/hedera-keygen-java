@@ -1,13 +1,23 @@
 package com.hedera.sdk.keygen.ui;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bouncycastle.util.encoders.Hex;
 
+import com.hedera.sdk.bip39.Mnemonic;
+import com.hedera.sdk.bip39.MnemonicException.MnemonicChecksumException;
+import com.hedera.sdk.bip39.MnemonicException.MnemonicLengthException;
+import com.hedera.sdk.bip39.MnemonicException.MnemonicWordException;
 //import com.hedera.sdk.keyUpdate.SetPublicKey;
 import com.hedera.sdk.keygen.CryptoUtils;
 import com.hedera.sdk.keygen.EDKeyChain;
+import com.hedera.sdk.keygen.EDKeyPair;
 import com.hedera.sdk.keygen.KeyChain;
 import com.hedera.sdk.keygen.KeyPair;
 import com.hedera.sdk.keygen.Reference;
@@ -109,6 +119,8 @@ public class Controller implements Initializable {
 	@FXML
 	private TextArea textRecovery;
 	@FXML
+	private TextArea textRecoveryBIP;
+	@FXML
 	private Button buttonClipPubKey;
 	@FXML
 	private Button buttonClipPubKeyHex;
@@ -118,6 +130,8 @@ public class Controller implements Initializable {
 	private Button buttonClipPrivKeyHex;
 	@FXML
 	private Button buttonClipWords;
+	@FXML
+	private Button buttonClipWordsBIP;
 	@FXML
 	private TextArea textRecoverFrom;
 	@FXML
@@ -271,20 +285,24 @@ public class Controller implements Initializable {
 		}
 	}
 	@FXML
-	private void handleButtonRecover(ActionEvent event) {
+	private void handleButtonRecover(ActionEvent event) throws MnemonicLengthException, MnemonicWordException, MnemonicChecksumException {
 		clearScreen();
 		// validate word input
 		String wordList = textRecoverFrom.getText();
 		wordList = wordList.replace(" ", ",");
 		String[] words = wordList.split(",");
+		wordList = wordList.replaceAll(",", " ");
+		List<String> allWords = Collections
+				.synchronizedList(new ArrayList<String>());
+		Matcher m = Pattern.compile("[a-zA-Z]+")
+				.matcher(wordList.toLowerCase());
+		while (m.find()) {
+			allWords.add(m.group());
+		}
+		Reference referenceSeed = null;
+		KeyPair keyPair = null;
 
-		if (words.length != 22) {
-			textStatus.setText("Invalid recovery word count - should be 22.");
-		} else {
-			Reference referenceSeed = null;
-			KeyPair keyPair = null;
-
-			wordList = wordList.replaceAll(",", " ");
+		if (words.length == 22) { // old style word list
 			referenceSeed = new Reference(wordList);
 
 			KeyChain keyChain = new EDKeyChain(referenceSeed);
@@ -292,7 +310,19 @@ public class Controller implements Initializable {
 			keyPair = keyChain.keyAtIndex(index);
 
 			showKeys(keyPair);
-		}
+		} else if (words.length == 24) { // new word list
+
+			byte[] entropy = new Mnemonic().toEntropy(allWords);
+			int index = keySDKRecover.isSelected() ? -1 : 0;
+			byte[] edSeed = CryptoUtils.deriveKey(entropy, index, 32);
+	        EDKeyPair pair = new EDKeyPair(edSeed);
+	        
+			showKeys(pair);
+			
+			
+		} else {
+			textStatus.setText("Invalid recovery word count - should be 22 or 24.");
+		} 
 	}
 
 	@FXML
@@ -335,11 +365,13 @@ public class Controller implements Initializable {
 			copyToClipboard(textPrivateKeyHexEnc.getText());
 		} else if (button.getId().contentEquals("4")) {
 			copyToClipboard(textRecovery.getText());
+		} else if (button.getId().contentEquals("5")) {
+			copyToClipboard(textRecoveryBIP.getText());
 		}
 	}
 
 	@FXML
-	private void handleButtonGenerate(ActionEvent event) {
+	private void handleButtonGenerate(ActionEvent event) throws MnemonicLengthException {
 		Reference referenceSeed = null;
 		KeyPair keyPair = null;
 		clearScreen();
@@ -361,7 +393,11 @@ public class Controller implements Initializable {
 			KeyChain keyChain = new EDKeyChain(referenceSeed);
 			keyPair = keyChain.keyAtIndex(index);
 			showKeys(keyPair);
-			textRecovery.setText(referenceSeed.toWords("", ",", ",", ",", ",", ",", ""));
+			textRecovery.setText(referenceSeed.toWords(""," "," "," "," "," ",""));
+			Mnemonic mnemonic = new Mnemonic();
+			List<String> mnemonicList = mnemonic.toMnemonic(referenceSeed.toBytes());
+			String listString = String.join(" ", mnemonicList);
+			textRecoveryBIP.setText(listString);
 		}
 	}
 

@@ -4,7 +4,6 @@ import org.bouncycastle.asn1.pkcs.PBKDF2Params;
 import org.bouncycastle.crypto.digests.SHA512Digest;
 import org.bouncycastle.crypto.generators.PKCS5S2ParametersGenerator;
 import org.bouncycastle.crypto.params.KeyParameter;
-import org.bouncycastle.util.encoders.Hex;
 
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
@@ -19,6 +18,17 @@ public class CryptoUtils {
         return bytes;
     }
 
+    public static byte[] sha256Digest(byte[] message) {
+        MessageDigest digest = null;
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        byte[] hash = digest.digest(message);
+        return hash;
+    }
+    
     public static byte[] sha384Digest(byte[] message) {
         MessageDigest digest = null;
         try {
@@ -46,7 +56,7 @@ public class CryptoUtils {
         byte[] salt = null;
         salt = new byte[]{-1};
 
-        String passwordStr = Hex.toHexString(password);
+//        String passwordStr = Hex.toHexString(password);
         PBKDF2Params params = new PBKDF2Params(salt,2048, length*8);
 
         PKCS5S2ParametersGenerator gen = new PKCS5S2ParametersGenerator(new SHA512Digest());

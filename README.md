@@ -36,7 +36,7 @@ Clicking on the `generate` button will generate a new key pair and output the fo
 
 ## Recover a key pair
 
-From the second tab, you are able to recover a key pair from a list of 22 words. The words may be supplied either separated with a space ( ) or comma (,).
+From the second tab, you are able to recover a key pair from a list of 22 or 24 words. The words may be supplied either separated with a space ( ) or comma (,).
 You may specify the index of the key you wish to recover, -1 for default java SDK compatibility, 0 for mobile wallet compatibility.
 
 ## Update a mainnet account key
