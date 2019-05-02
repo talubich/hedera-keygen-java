@@ -24,7 +24,7 @@ The utility is a Java .jar file which is invoked as follows
 
 ## Generate a new key pair
 
-Choose which key index you'd like to generate a key for, -1 is the defaul used by the java sdk while the mobile wallet uses index 0.
+Choose which key index you'd like to generate a key for, -1 is the default used by the java sdk (v0.2.x) while the mobile wallet and java sdk (0.3.x) uses index 0.
 
 You may optionally provide a seed if you do not trust your operating system's entropy. *Note, the same seed always returns the same key pair. The seed must be 64 hex encoded bytes.*
 
@@ -37,9 +37,9 @@ Clicking on the `generate` button will generate a new key pair and output the fo
 ## Recover a key pair
 
 From the second tab, you are able to recover a key pair from a list of 22 or 24 words. The words may be supplied either separated with a space ( ) or comma (,).
-You may specify the index of the key you wish to recover, -1 for default java SDK compatibility, 0 for mobile wallet compatibility.
+You may specify the index of the key you wish to recover, -1 for default java SDK compatibility (v0.2.x), 0 for mobile wallet compatibility (0.3.x).
 
-## Update a mainnet account key
+## Update a mainnet account key - work in progress
 
 This capability exists purely for the purpose of enabling mainnet Hedera account holders to re-synchronise their mainnet account public key with the mobile wallet application generated key.
 Indeed, in some instances, mainnet accounts have been created with a self-generated key and this is not compatible with the iOS and Android wallet applications.
@@ -57,7 +57,7 @@ You will require the following information in order to proceed
 * Your mainnet account number
 * Your current mainnet account public key in Hex Encoded format (302xxx)
 * Your current mainnet account private key in Hex Encoded format (302xxx)
-* The list of 22 recovery words from the wallet application, separated by spaces or commas
+* The list of 22 or 24 recovery words from the wallet application, separated by spaces or commas
 
 ### What does the utility do
 
