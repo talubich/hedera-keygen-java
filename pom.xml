@@ -6,7 +6,7 @@
 
 	<groupId>com.hedera</groupId>
 	<artifactId>hedera-sdk-keygen</artifactId>
-	<version>1.2</version>
+	<version>1.3</version>
 	<packaging>jar</packaging>
 
 	<name>hedera-keygen-java</name>
@@ -35,11 +35,11 @@
 		<!--<version>1.58.0.0</version> -->
 		<!--</dependency> -->
 		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>18.0</version>
-		</dependency>
-		<dependency>
+		      <groupId>com.google.guava</groupId>
+		      <artifactId>guava</artifactId>
+		      <version>24.1.1-jre</version>
+		  </dependency>
+		  		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk15on</artifactId>
 			<version>1.60</version>
@@ -48,6 +48,37 @@
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcpkix-jdk15on</artifactId>
 			<version>1.60</version>
+		</dependency>
+		<dependency>
+			<groupId>com.hedera.hashgraph</groupId>
+			<artifactId>hedera-java-sdk</artifactId>
+			<version>0.2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.hedera.hashgraph</groupId>
+			<artifactId>hedera-protobuf-java-api</artifactId>
+			<version>0.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.2.3</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>1.2.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.25</version>
 		</dependency>
 		<!-- JUnit 5.x -->
 		<dependency>
@@ -119,7 +150,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>com.hedera.sdk.keygen.KeyGen</mainClass>
+							<mainClass>com.hedera.sdk.keygen.ui.Main</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

@@ -1,6 +1,5 @@
 package com.hedera.sdk.keygen;
 
-import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
