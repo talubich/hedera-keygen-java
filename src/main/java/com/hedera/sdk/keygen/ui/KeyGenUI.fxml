@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="707.0" prefWidth="635.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hedera.sdk.keygen.ui.Controller">
+<AnchorPane prefHeight="769.0" prefWidth="635.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hedera.sdk.keygen.ui.Controller">
    <children>
       <TabPane layoutX="14.0" layoutY="14.0" prefHeight="413.0" prefWidth="607.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="280.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
         <tabs>
@@ -93,5 +93,8 @@
       <Button id="1" fx:id="buttonClipPubKeyHex" layoutX="556.0" layoutY="500.0" mnemonicParsing="false" onAction="#handleButtonClipText" text="Copy" />
       <Button id="2" fx:id="buttonClipPrivKey" layoutX="556.0" layoutY="566.0" mnemonicParsing="false" onAction="#handleButtonClipText" text="Copy" />
       <Button id="3" fx:id="buttonClipPrivKeyHex" layoutX="556.0" layoutY="625.0" mnemonicParsing="false" onAction="#handleButtonClipText" text="Copy" />
+      <Label fx:id="labelPrivateKeyDER" layoutX="32.0" layoutY="671.0" text="Non DER Encoded (hex)" />
+      <TextField fx:id="textNotDER" editable="false" layoutX="30.0" layoutY="688.0" onMouseClicked="#handleTextSelect" prefHeight="27.0" prefWidth="514.0" />
+      <Button id="6" fx:id="buttonClipNotDER" layoutX="555.0" layoutY="686.0" mnemonicParsing="false" onAction="#handleButtonClipText" text="Copy" />
    </children>
 </AnchorPane>

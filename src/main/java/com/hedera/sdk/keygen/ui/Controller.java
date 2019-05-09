@@ -117,6 +117,8 @@ public class Controller implements Initializable {
 	@FXML
 	private TextField textPrivateKeyHexEnc;
 	@FXML
+	private TextField textNotDER;
+	@FXML
 	private TextArea textRecovery;
 	@FXML
 	private TextArea textRecoveryBIP;
@@ -133,6 +135,8 @@ public class Controller implements Initializable {
 	@FXML
 	private Button buttonClipWordsBIP;
 	@FXML
+	private Button buttonClipNotDER;
+	@FXML
 	private TextArea textRecoverFrom;
 	@FXML
 	private Button buttonRecover;
@@ -145,6 +149,8 @@ public class Controller implements Initializable {
 	private Labeled labelPrivateKey;
 	@FXML
 	private Labeled labelPrivateKey2;
+	@FXML 
+	private Labeled labelPrivateKeyDER;
 
 	@FXML
 	private TextField textAccountNumber;
@@ -367,6 +373,8 @@ public class Controller implements Initializable {
 			copyToClipboard(textRecovery.getText());
 		} else if (button.getId().contentEquals("5")) {
 			copyToClipboard(textRecoveryBIP.getText());
+		} else if (button.getId().contentEquals("6")) {
+			copyToClipboard(textNotDER.getText());
 		}
 	}
 
@@ -416,6 +424,8 @@ public class Controller implements Initializable {
 			textPrivateKeyHex.setText("");
 			textPrivateKeyHexEnc.setText("");
 			textRecovery.setText("");
+			textRecoveryBIP.setText("");
+			textNotDER.setText("");
 		} catch (Exception e) {
 			// do nothing
 		}
@@ -426,6 +436,7 @@ public class Controller implements Initializable {
 		textPublicKeyHexEnc.setText(keyPair.getPublicKeyEncodedHex());
 		textPrivateKeyHex.setText(keyPair.getPrivateKeyHex());
 		textPrivateKeyHexEnc.setText(keyPair.getPrivateKeyEncodedHex());
+		textNotDER.setText(keyPair.getSeedAndPublicKeyHex());
 	}
 
 	private void showResults(boolean show) {
@@ -434,16 +445,19 @@ public class Controller implements Initializable {
 			labelPublicKey2.setVisible(show);
 			labelPrivateKey.setVisible(show);
 			labelPrivateKey2.setVisible(show);
+			labelPrivateKeyDER.setVisible(show);
 
 			buttonClipPubKey.setVisible(show);
 			buttonClipPubKeyHex.setVisible(show);
 			buttonClipPrivKey.setVisible(show);
 			buttonClipPrivKeyHex.setVisible(show);
+			buttonClipNotDER.setVisible(show);
 
 			textPublicKeyHex.setVisible(show);
 			textPublicKeyHexEnc.setVisible(show);
 			textPrivateKeyHex.setVisible(show);
 			textPrivateKeyHexEnc.setVisible(show);
+			textNotDER.setVisible(show);
 		} catch (Exception e) {
 			// do nothing
 		}
