@@ -12,28 +12,64 @@
 	<name>hedera-keygen-java</name>
 	<url>https://www.hedera.com</url>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>10</maven.compiler.source>
-		<maven.compiler.target>10</maven.compiler.target>
-	</properties>
+<properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+</properties>
 
 
 	<dependencies>
-		<!-- Java 6 = JAX-B Version 2.0 -->
-		<!-- Java 7 = JAX-B Version 2.2.3 -->
-		<!-- Java 8 = JAX-B Version 2.2.8 -->
+
+<dependency>
+    <groupId>javax.xml.bind</groupId>
+    <artifactId>jaxb-api</artifactId>
+    <version>2.3.1</version>
+</dependency>
+<dependency>
+    <groupId>com.sun.xml.bind</groupId>
+    <artifactId>jaxb-core</artifactId>
+    <version>2.3.0.1</version>
+</dependency>
+<dependency>
+    <groupId>com.sun.xml.bind</groupId>
+    <artifactId>jaxb-impl</artifactId>
+    <version>2.3.1</version>
+</dependency>
+<dependency>
+    <groupId>javax.activation</groupId>
+    <artifactId>activation</artifactId>
+    <version>1.1.1</version>
+</dependency>
+
 		<dependency>
 			<groupId>net.i2p.crypto</groupId>
 			<artifactId>eddsa</artifactId>
 			<version>0.3.0</version>
 		</dependency>
 
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-controls</artifactId>
+      <version>11.0.2</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.openjfx</groupId>
+    	<artifactId>javafx-fxml</artifactId>
+    	<version>11.0.2</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.openjfx</groupId>
+    	<artifactId>javafx-base</artifactId>
+    	<version>11.0.2</version>
+    </dependency>
+
 		<!--<dependency> -->
 		<!--<groupId>com.madgag.spongycastle</groupId> -->
 		<!--<artifactId>core</artifactId> -->
 		<!--<version>1.58.0.0</version> -->
 		<!--</dependency> -->
+
 		<dependency>
 		      <groupId>com.google.guava</groupId>
 		      <artifactId>guava</artifactId>
@@ -104,7 +140,24 @@
 
 
 	<build>
+		<sourceDirectory>src</sourceDirectory>
 		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.0</version>
+				<configuration>
+					<release>11</release>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.ow2.asm</groupId>
+						<artifactId>asm</artifactId>
+						<version>6.2</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
@@ -148,24 +201,22 @@
 				<version>3.1.0</version>
 				<configuration>
 					<archive>
-						<manifest>
+ 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>com.hedera.sdk.keygen.ui.Main</mainClass>
+							<mainClass>com.hedera.sdk.keygen.ui</mainClass>
 						</manifest>
-					</archive>
+                       </archive>
 				</configuration>
 			</plugin>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.0</version>
-				<dependencies>
-					<dependency>
-						<groupId>org.ow2.asm</groupId>
-						<artifactId>asm</artifactId>
-						<version>6.2</version>
-					</dependency>
-				</dependencies>
-			</plugin>
+      <plugin>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-maven-plugin</artifactId>
+        <version>0.0.2</version>
+        <configuration>
+          <mainClass>Main</mainClass>
+        </configuration>
+      </plugin>
+			
 		</plugins>
 	</build>
 

@@ -16,6 +16,10 @@ JavaFX for Eclipse: http://www.eclipse.org/efxclipse/install.html (version 3.3.0
 
 This project is currently at version 1.3
 
+## Prerequisites
+
+This application requires java 10 to be installed and your JAVA_HOME to point to the java 10 installation.
+
 ## Invoking the utility
 
 The utility is a Java .jar file which is invoked as follows
@@ -86,3 +90,7 @@ Since the utility performs 2 queries (getInfo on account) and 1 transaction, som
 
 By default, the utility communicates with a set node on mainnet (35.237.200.180, port 50211, node account 3.
 You can override this default if you wish by providing a valid alernative IP address, port and node account number.
+
+## Building the jar yourself
+
+For some reason, `mvn install` doesn't generate a runnable jar file. Rather it does, but running the file with `java -jar` results in a class def not found. As a result, the jar file in this repository was built using Eclipse's export facility. This may be resolved in the future, however a runnable jar file is necessary for non developers.
