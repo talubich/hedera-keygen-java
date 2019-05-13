@@ -58,7 +58,7 @@ The utility updates your mainnet account's public key. You must be 100% certain 
 
 You will require the following information in order to proceed
 
-* Your mainnet account number
+* Your mainnet account ID
 * Your current mainnet account public key in Hex Encoded format (302xxx)
 * Your current mainnet account private key in Hex Encoded format (302xxx)
 * The list of 22 or 24 recovery words from the wallet application, separated by spaces or commas
