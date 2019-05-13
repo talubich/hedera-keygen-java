@@ -84,7 +84,7 @@ If the above checks were successful, the utility will prompt you to confirm you 
 
 ### Cost of running the utility
 
-Since the utility performs 2 queries (getInfo on account) and 1 transaction, some hBar will be deducted from your account. Unsuccessful validations of current key against that supplied will result in a deduction, ensure you have the correct information to start with.
+Since the utility performs 2 queries (getInfo on account) and 1 transaction, some tinybars will be deducted from your account. Unsuccessful validations of current key against that supplied will result in a deduction, ensure you have the correct information to start with.
 
 ### Overriding defaults
 
