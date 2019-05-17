@@ -41,7 +41,7 @@ Clicking on the `generate` button will generate a new key pair and output the fo
 ## Recover a key pair
 
 From the second tab, you are able to recover a key pair from a list of 22 or 24 words. The words may be supplied either separated with a space ( ) or comma (,).
-You may specify the index of the key you wish to recover, -1 for default java SDK compatibility (v0.2.x), 0 for mobile wallet compatibility (0.3.x).
+You may specify the index of the key you wish to recover, -1 for default java SDK compatibility (v0.2.x), 0 for mobile wallet compatibility (v0.3.x).
 
 ## Update a mainnet account key - work in progress
 
@@ -58,7 +58,7 @@ The utility updates your mainnet account's public key. You must be 100% certain 
 
 You will require the following information in order to proceed
 
-* Your mainnet account number
+* Your mainnet account ID
 * Your current mainnet account public key in Hex Encoded format (302xxx)
 * Your current mainnet account private key in Hex Encoded format (302xxx)
 * The list of 22 or 24 recovery words from the wallet application, separated by spaces or commas
@@ -84,7 +84,7 @@ If the above checks were successful, the utility will prompt you to confirm you 
 
 ### Cost of running the utility
 
-Since the utility performs 2 queries (getInfo on account) and 1 transaction, some hBar will be deducted from your account. Unsuccessful validations of current key against that supplied will result in a deduction, ensure you have the correct information to start with.
+Since the utility performs 2 queries (getInfo on account) and 1 transaction, some tinybars will be deducted from your account. Unsuccessful validations of current key against that supplied will result in a deduction, ensure you have the correct information to start with.
 
 ### Overriding defaults
 
