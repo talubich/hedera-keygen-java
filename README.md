@@ -26,6 +26,8 @@ The utility is a Java .jar file which is invoked as follows
 
 ```java -jar hedera-sdk-keygen-1.3-run.jar``` this will launch a UI from which you will be able to perform a number of operations
 
+** For macOS, maven and intelliJ setup refer to bottom **
+
 ## Generate a new key pair
 
 Choose which key index you'd like to generate a key for, -1 is the default used by the java sdk (v0.2.x) while the mobile wallet and java sdk (0.3.x) uses index 0.
@@ -90,3 +92,62 @@ Since the utility performs 2 queries (getInfo on account) and 1 transaction, som
 
 By default, the utility communicates with a set node on mainnet (35.237.200.180, port 50211, node account 3.
 You can override this default if you wish by providing a valid alernative IP address, port and node account number.
+
+
+## MacOS/Maven/intelliJ setup
+For users trying to load Hedera keygen java on MacOS
+
+- Java version 11.0.2-open (Using sdkman)
+- JavaFX 12
+- intelliJ
+
+**COMMON ERRORS**
+
+After cloning repo and running ```java -jar hedera-sdk-keygen-1.3-run.jar OR mvn clean javafx:run```, you might encounter these errors:
+
+```
+Error Initializing QuantumRenderer: no suitable pipeline found
+...
+java.lang.RuntimeException: No toolkit found at javafx.graphics/com.sun.javafx.tk.Toolkit.getToolkit
+
+OR via sdk runtime
+Error: JavaFX runtime components are missing, and are required to run this application
+```
+
+This is an indication for you to
+[**Download JavaFX**](https://gluonhq.com/products/javafx/)
+
+
+Next, head to [**Openjfx docs**](https://openjfx.io/openjfx-docs/#introduction) to setup your IntelliJ configuration for JavaFX
+
+- EXPORT path of downloaded openjfx sdk to your .zshrc profile (or whichever profile) and check it exist with `echo $PATH`
+ ```bash
+ export PATH=path/to/javafx-sdk-11.0.1/lib
+ ```
+
+- Run > Edit Configurations
+ `+ Application` and create a `Main class`. Under `VM options`, add the required modules `--module-path /path/to/javafx-sdk-12.0.1/lib --add-modules=javafx.controls,javafx.fxml`
+
+- File > Project Structure >  Libraries > 
+ `add new project library`, `java`, and point to the downloaded javafx12sdk11.0.2/lib
+
+- Go to `pom.xml` in the root directory,
+include resources (check out [stackoverflow question](https://stackoverflow.com/questions/22000423/javafx-and-maven-nullpointerexception-location-is-required/39228758))
+```bash
+<build>
+...
+   <sourceDirectory>src</sourceDirectory>
+   <resources>
+      <resource>
+         <filtering>false</filtering>
+         <directory>src/main/java</directory>
+         <includes>
+            <include>**/*.fxml</include>
+         </includes>
+      </resource>
+   </resources>
+...
+</build>
+```
+
+Finally use the sdk runtime to `Run main` and you should be good to go!
