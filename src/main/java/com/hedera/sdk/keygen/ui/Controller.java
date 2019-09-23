@@ -10,6 +10,8 @@ import java.util.regex.Pattern;
 
 import org.bouncycastle.util.encoders.Hex;
 
+import com.hedera.sdk.bip32.EDBip32KeyChain;
+import com.hedera.sdk.bip32.HGCSeed;
 import com.hedera.sdk.bip39.Mnemonic;
 import com.hedera.sdk.bip39.MnemonicException.MnemonicChecksumException;
 import com.hedera.sdk.bip39.MnemonicException.MnemonicLengthException;
@@ -31,6 +33,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
@@ -52,6 +55,16 @@ public class Controller implements Initializable {
 	private Long nodeAccountNum;
 	private long accountNumber = 0;
 	private String[] recoveryArray;
+	
+	private enum keyType {
+		SDK
+		,WALLET
+		,WALLETNEW
+	}
+	
+	private keyType generateKeyType = keyType.WALLETNEW;
+	private keyType recoverKeyType = keyType.WALLETNEW;
+	
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -93,9 +106,13 @@ public class Controller implements Initializable {
 	@FXML
 	private ToggleButton keyWallet;
 	@FXML
+	private ToggleButton keyWalletNew;
+	@FXML
 	private ToggleButton keySDKRecover;
 	@FXML
 	private ToggleButton keyWalletRecover;
+	@FXML
+	private ToggleButton keyWalletRecoverNew;
 	@FXML
 	private TextField textSeed;
 	@FXML
@@ -151,7 +168,15 @@ public class Controller implements Initializable {
 	private Labeled labelPrivateKey2;
 	@FXML 
 	private Labeled labelPrivateKeyDER;
-
+	@FXML 
+	private Labeled labelSeed;
+	@FXML
+	private Labeled labelRecovery22;
+	@FXML
+	private Labeled labelRecovery24;
+	@FXML
+	private Labeled labelRecoverFrom;
+	
 	@FXML
 	private TextField textAccountNumber;
 	@FXML
@@ -291,7 +316,7 @@ public class Controller implements Initializable {
 		}
 	}
 	@FXML
-	private void handleButtonRecover(ActionEvent event) throws MnemonicLengthException, MnemonicWordException, MnemonicChecksumException {
+	private void handleButtonRecover(ActionEvent event) throws Exception {
 		clearScreen();
 		// validate word input
 		String wordList = textRecoverFrom.getText();
@@ -308,27 +333,38 @@ public class Controller implements Initializable {
 		Reference referenceSeed = null;
 		KeyPair keyPair = null;
 
-		if (words.length == 22) { // old style word list
-			referenceSeed = new Reference(wordList);
-
-			KeyChain keyChain = new EDKeyChain(referenceSeed);
-			int index = keySDKRecover.isSelected() ? -1 : 0;
-			keyPair = keyChain.keyAtIndex(index);
-
-			showKeys(keyPair);
-		} else if (words.length == 24) { // new word list
-
-			byte[] entropy = new Mnemonic().toEntropy(allWords);
-			int index = keySDKRecover.isSelected() ? -1 : 0;
-			byte[] edSeed = CryptoUtils.deriveKey(entropy, index, 32);
-	        EDKeyPair pair = new EDKeyPair(edSeed);
-	        
-			showKeys(pair);
-			
-			
+		if (recoverKeyType == keyType.WALLETNEW) {
+			if (words.length == 24) {
+				byte[] entropy = new Mnemonic().toEntropy(allWords);
+				HGCSeed seed = new HGCSeed(entropy);
+				EDBip32KeyChain keyChain = new EDBip32KeyChain(seed);
+				KeyPair pair = keyChain.keyAtIndex(0);
+		        
+				showKeys(pair);
+			} else {
+				textStatus.setText("Invalid recovery word count - should be 24.");
+			}
 		} else {
-			textStatus.setText("Invalid recovery word count - should be 22 or 24.");
-		} 
+			if (words.length == 22) { // old style word list
+				referenceSeed = new Reference(wordList);
+	
+				KeyChain keyChain = new EDKeyChain(referenceSeed);
+				int index = keySDKRecover.isSelected() ? -1 : 0;
+				keyPair = keyChain.keyAtIndex(index);
+	
+				showKeys(keyPair);
+			} else if (words.length == 24) { // new word list
+	
+				byte[] entropy = new Mnemonic().toEntropy(allWords);
+				int index = keySDKRecover.isSelected() ? -1 : 0;
+				byte[] edSeed = CryptoUtils.deriveKey(entropy, index, 32);
+		        EDKeyPair pair = new EDKeyPair(edSeed);
+		        
+				showKeys(pair);
+			} else {
+				textStatus.setText("Invalid recovery word count - should be 22 or 24.");
+			}
+		}
 	}
 
 	@FXML
@@ -350,12 +386,39 @@ public class Controller implements Initializable {
 		showResults(true);
 	}
 
+	
+	
+	@FXML
+	private void handleKeyRecoverSDK(ActionEvent event) {
+		recoverKeyType = keyType.SDK;
+		clearScreen();
+	}
+
+	@FXML
+	private void handleKeyRecoverWallet(ActionEvent event) {
+		recoverKeyType = keyType.WALLET;
+		clearScreen();
+	}
+	@FXML
+	private void handleKeyRecoverWalletNew(ActionEvent event) {
+		recoverKeyType = keyType.WALLETNEW;
+		clearScreen();
+	}
 	@FXML
 	private void handleKeySDK(ActionEvent event) {
+		generateKeyType = keyType.SDK;
+		clearScreen();
 	}
 
 	@FXML
 	private void handleKeyWallet(ActionEvent event) {
+		generateKeyType = keyType.WALLET;
+		clearScreen();
+	}
+	@FXML
+	private void handleKeyWalletNew(ActionEvent event) {
+		generateKeyType = keyType.WALLETNEW;
+		clearScreen();
 	}
 
 	@FXML
@@ -379,7 +442,7 @@ public class Controller implements Initializable {
 	}
 
 	@FXML
-	private void handleButtonGenerate(ActionEvent event) throws MnemonicLengthException {
+	private void handleButtonGenerate(ActionEvent event) throws Exception {
 		Reference referenceSeed = null;
 		KeyPair keyPair = null;
 		clearScreen();
@@ -387,25 +450,36 @@ public class Controller implements Initializable {
 		if ((textSeed.getLength() != 64) && (textSeed.getLength() != 0)) {
 			textStatus.setText("Seed length must be 64 hex encoded bytes for ED25519");
 		} else {
-			if (keyWallet.isSelected()) {
-				index = 0;
-			}
-
-			if (textSeed.getLength() == 64) {
-				byte[] seedBytes = Hex.decode(textSeed.getText());
-				referenceSeed = new Reference(seedBytes);
+			if (generateKeyType == keyType.WALLETNEW) {
+				HGCSeed seed;
+				seed = new HGCSeed(CryptoUtils.getSecureRandomData(32));
+				keyPair = new EDBip32KeyChain(seed).keyAtIndex(0);
+				showKeys(keyPair);
+				Mnemonic mnemonic = new Mnemonic();
+				var mnemonicList = mnemonic.toMnemonic(seed.getEntropy());
+				String listString = String.join(" ", mnemonicList);
+				textRecoveryBIP.setText(listString);
 			} else {
-				referenceSeed = new Reference(CryptoUtils.getSecureRandomData(32));
+				if (generateKeyType == keyType.WALLET) {
+					index = 0;
+				}
+	
+				if (textSeed.getLength() == 64) {
+					byte[] seedBytes = Hex.decode(textSeed.getText());
+					referenceSeed = new Reference(seedBytes);
+				} else {
+					referenceSeed = new Reference(CryptoUtils.getSecureRandomData(32));
+				}
+	
+				KeyChain keyChain = new EDKeyChain(referenceSeed);
+				keyPair = keyChain.keyAtIndex(index);
+				showKeys(keyPair);
+				textRecovery.setText(referenceSeed.toWords(""," "," "," "," "," ",""));
+				Mnemonic mnemonic = new Mnemonic();
+				List<String> mnemonicList = mnemonic.toMnemonic(referenceSeed.toBytes());
+				String listString = String.join(" ", mnemonicList);
+				textRecoveryBIP.setText(listString);
 			}
-
-			KeyChain keyChain = new EDKeyChain(referenceSeed);
-			keyPair = keyChain.keyAtIndex(index);
-			showKeys(keyPair);
-			textRecovery.setText(referenceSeed.toWords(""," "," "," "," "," ",""));
-			Mnemonic mnemonic = new Mnemonic();
-			List<String> mnemonicList = mnemonic.toMnemonic(referenceSeed.toBytes());
-			String listString = String.join(" ", mnemonicList);
-			textRecoveryBIP.setText(listString);
 		}
 	}
 
@@ -426,6 +500,35 @@ public class Controller implements Initializable {
 			textRecovery.setText("");
 			textRecoveryBIP.setText("");
 			textNotDER.setText("");
+		} catch (Exception e) {
+			// do nothing
+		}
+
+		textSeed.setVisible(generateKeyType != keyType.WALLETNEW);
+		labelSeed.setVisible(generateKeyType != keyType.WALLETNEW);
+		textRecovery.setVisible(generateKeyType != keyType.WALLETNEW);
+		labelRecovery22.setVisible(generateKeyType != keyType.WALLETNEW);
+		buttonClipWords.setVisible(generateKeyType != keyType.WALLETNEW);
+
+		try {
+			if (labelRecovery24.isVisible()) {
+				if (generateKeyType != keyType.WALLETNEW) {
+					labelRecovery24.setText("Recovery Words (24)");
+				} else {
+					labelRecovery24.setText("BIP 32 Recovery Words (24)");
+				}
+			}
+		} catch (Exception e) {
+			// do nothing
+		}
+		try {
+			if (labelRecoverFrom.isVisible()) {
+				if (recoverKeyType != keyType.WALLETNEW) {
+					labelRecoverFrom.setText("Recovery Words (24)");
+				} else {
+					labelRecoverFrom.setText("BIP 32 Recovery Words (24)");
+				}
+			}
 		} catch (Exception e) {
 			// do nothing
 		}

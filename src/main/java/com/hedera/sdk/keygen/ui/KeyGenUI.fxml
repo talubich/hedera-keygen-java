@@ -11,30 +11,30 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="774.0" prefWidth="756.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hedera.sdk.keygen.ui.Controller">
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="827.0" prefWidth="756.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hedera.sdk.keygen.ui.Controller">
    <children>
-      <TabPane layoutX="14.0" layoutY="14.0" prefHeight="411.0" prefWidth="728.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
+      <TabPane layoutX="14.0" layoutY="14.0" prefHeight="431.0" prefWidth="728.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
         <tabs>
           <Tab fx:id="tabGenerateKeyPair" onSelectionChanged="#handleTabGenerateKeyPair" text="Generate Key Pair">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="383.0" prefWidth="607.0">
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="534.0" prefWidth="752.0">
                      <children>
                         <RadioButton fx:id="keySDK" layoutX="14.0" layoutY="31.0" mnemonicParsing="false" onAction="#handleKeySDK" selected="true" text="Key at index -1 (Default for java SDK)" AnchorPane.leftAnchor="14.0">
                            <toggleGroup>
                               <ToggleGroup fx:id="keyGroup" />
                            </toggleGroup>
                         </RadioButton>
-                        <RadioButton fx:id="keyWallet" layoutX="14.0" layoutY="57.0" mnemonicParsing="false" onAction="#handleKeyWallet" selected="true" text="Key at index 0 (Default for mobile wallet)" toggleGroup="$keyGroup" AnchorPane.leftAnchor="14.0" />
-                        <Label layoutX="14.0" layoutY="90.0" text="Seed (optional 64 hex encoded bytes)" AnchorPane.leftAnchor="14.0" />
-                        <TextField fx:id="textSeed" layoutX="12.0" layoutY="107.0" onMouseClicked="#handleTextSelect" prefHeight="20.0" prefWidth="489.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" />
-                        <Button fx:id="buttonGenerate" layoutX="12.0" layoutY="150.0" mnemonicParsing="false" onAction="#handleButtonGenerate" prefHeight="34.0" prefWidth="488.0" text="Generate" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" />
-                        <Label layoutX="16.0" layoutY="195.0" text="Recovery Words (22)" />
-                        <TextArea fx:id="textRecovery" editable="false" layoutX="14.0" layoutY="213.0" onMouseClicked="#handleTextSelect" prefHeight="64.0" prefWidth="514.0" wrapText="true" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="60.0" />
-                        <Button id="4" fx:id="buttonClipWords" layoutX="539.0" layoutY="245.0" mnemonicParsing="false" onAction="#handleButtonClipText" text="Copy" AnchorPane.rightAnchor="0.0" />
-                        <Label layoutX="18.0" layoutY="287.0" text="Recovery Words (24)" />
-                        <TextArea fx:id="textRecoveryBIP" editable="false" layoutX="16.0" layoutY="305.0" onMouseClicked="#handleTextSelect" prefHeight="64.0" prefWidth="514.0" wrapText="true" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="60.0" />
-                        <Button id="5" fx:id="buttonClipWordsBIP" layoutX="541.0" layoutY="337.0" mnemonicParsing="false" onAction="#handleButtonClipText" text="Copy" AnchorPane.rightAnchor="0.0" />
-                        <Button id="0" fx:id="buttonClipPubKey" layoutX="543.0" layoutY="401.0" mnemonicParsing="false" onAction="#handleButtonClipText" text="Copy" AnchorPane.rightAnchor="0.0" />
+                        <RadioButton fx:id="keyWallet" layoutX="14.0" layoutY="57.0" mnemonicParsing="false" onAction="#handleKeyWallet" selected="true" text="Key at index 0 (Default for old mobile wallet)" toggleGroup="$keyGroup" AnchorPane.leftAnchor="14.0" />
+                        <RadioButton fx:id="keyWalletNew" layoutX="15.0" layoutY="83.0" mnemonicParsing="false" onAction="#handleKeyWalletNew" selected="true" text="Key for new mobile wallet (BIP32)" toggleGroup="$keyGroup" AnchorPane.leftAnchor="14.0" />
+                        <Label fx:id="labelSeed" layoutX="14.0" layoutY="111.0" text="Seed (optional 64 hex encoded bytes)" visible="false" AnchorPane.leftAnchor="14.0" />
+                        <TextField fx:id="textSeed" layoutX="14.0" layoutY="128.0" onMouseClicked="#handleTextSelect" prefHeight="20.0" prefWidth="489.0" visible="false" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+                        <Button fx:id="buttonGenerate" layoutX="14.0" layoutY="166.0" mnemonicParsing="false" onAction="#handleButtonGenerate" prefHeight="34.0" prefWidth="488.0" text="Generate" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+                        <Label fx:id="labelRecovery22" layoutX="16.0" layoutY="211.0" text="Recovery Words (22)" />
+                        <TextArea fx:id="textRecovery" editable="false" layoutX="14.0" layoutY="229.0" onMouseClicked="#handleTextSelect" prefHeight="64.0" prefWidth="514.0" wrapText="true" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="60.0" />
+                        <Button id="4" fx:id="buttonClipWords" layoutX="678.0" layoutY="261.0" mnemonicParsing="false" onAction="#handleButtonClipText" text="Copy" AnchorPane.rightAnchor="0.0" />
+                        <Label fx:id="labelRecovery24" layoutX="18.0" layoutY="303.0" text="Recovery Words (24)" />
+                        <TextArea fx:id="textRecoveryBIP" editable="false" layoutX="14.0" layoutY="321.0" onMouseClicked="#handleTextSelect" prefHeight="64.0" prefWidth="514.0" wrapText="true" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="60.0" />
+                        <Button id="5" fx:id="buttonClipWordsBIP" layoutX="678.0" layoutY="353.0" mnemonicParsing="false" onAction="#handleButtonClipText" text="Copy" AnchorPane.rightAnchor="0.0" />
                      </children></AnchorPane>
             </content>
           </Tab>
@@ -42,15 +42,16 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <Button fx:id="buttonRecover" layoutX="14.0" layoutY="190.0" mnemonicParsing="false" onAction="#handleButtonRecover" prefHeight="34.0" prefWidth="488.0" text="Recover" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" />
-                        <Label layoutX="14.0" layoutY="87.0" text="Recovery Words (space or comma separated)" AnchorPane.leftAnchor="14.0" />
-                        <TextArea fx:id="textRecoverFrom" layoutX="14.0" layoutY="105.0" onMouseClicked="#handleTextSelect" prefHeight="64.0" prefWidth="514.0" wrapText="true" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" />
-                        <RadioButton fx:id="keySDKRecover" layoutX="14.0" layoutY="20.0" mnemonicParsing="false" onAction="#handleKeySDK" selected="true" text="Key at index -1 (Default for java SDK)" AnchorPane.leftAnchor="14.0">
+                        <Button fx:id="buttonRecover" layoutX="14.0" layoutY="211.0" mnemonicParsing="false" onAction="#handleButtonRecover" prefHeight="34.0" prefWidth="488.0" text="Recover" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+                        <Label fx:id="labelRecoverFrom" layoutX="14.0" layoutY="108.0" text="Recovery Words (space or comma separated)" AnchorPane.leftAnchor="14.0" />
+                        <TextArea fx:id="textRecoverFrom" layoutX="14.0" layoutY="126.0" onMouseClicked="#handleTextSelect" prefHeight="64.0" prefWidth="514.0" wrapText="true" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+                        <RadioButton fx:id="keySDKRecover" layoutX="14.0" layoutY="20.0" mnemonicParsing="false" onAction="#handleKeyRecoverSDK" selected="true" text="Key at index -1 (Default for java SDK)" AnchorPane.leftAnchor="14.0">
                            <toggleGroup>
                               <ToggleGroup fx:id="keyRecoverGroup" />
                            </toggleGroup>
                         </RadioButton>
-                        <RadioButton fx:id="keyWalletRecover" layoutX="14.0" layoutY="50.0" mnemonicParsing="false" onAction="#handleKeyWallet" selected="true" text="Key at index 0 (Default for mobile wallet)" toggleGroup="$keyRecoverGroup" AnchorPane.leftAnchor="14.0" />
+                        <RadioButton fx:id="keyWalletRecover" layoutX="14.0" layoutY="50.0" mnemonicParsing="false" onAction="#handleKeyRecoverWallet" selected="true" text="Key at index 0 (Default for mobile wallet)" toggleGroup="$keyRecoverGroup" AnchorPane.leftAnchor="14.0" />
+                        <RadioButton fx:id="keyWalletRecoverNew" layoutX="24.0" layoutY="83.0" mnemonicParsing="false" onAction="#handleKeyRecoverWalletNew" selected="true" text="Key for new mobile wallet (BIP32)" toggleGroup="$keyRecoverGroup" AnchorPane.leftAnchor="14.0" />
                      </children></AnchorPane>
             </content>
           </Tab>
@@ -78,23 +79,24 @@
             </Tab>
         </tabs>
       </TabPane>
-      <TextField fx:id="textStatus" editable="false" layoutX="14.0" layoutY="733.0" prefHeight="26.0" prefWidth="609.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0">
+      <TextField fx:id="textStatus" editable="false" layoutX="14.0" layoutY="787.0" prefHeight="26.0" prefWidth="609.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0">
          <font>
             <Font name="System Bold" size="13.0" />
          </font></TextField>
-      <Label fx:id="labelPublicKey" layoutX="31.0" layoutY="429.0" text="Public Key (hex)" />
-      <TextField fx:id="textPublicKeyHex" editable="false" layoutX="29.0" layoutY="446.0" onMouseClicked="#handleTextSelect" prefHeight="27.0" prefWidth="514.0" AnchorPane.leftAnchor="28.0" AnchorPane.rightAnchor="74.0" />
-      <Label fx:id="labelPublicKey2" layoutX="33.0" layoutY="485.0" text="Public Key Encoded (hex)" />
-      <TextField fx:id="textPublicKeyHexEnc" editable="false" layoutX="31.0" layoutY="502.0" onMouseClicked="#handleTextSelect" prefHeight="27.0" prefWidth="514.0" AnchorPane.leftAnchor="28.0" AnchorPane.rightAnchor="74.0" />
-      <Label fx:id="labelPrivateKey" layoutX="33.0" layoutY="551.0" text="Private Key (hex)" />
-      <TextField fx:id="textPrivateKeyHex" editable="false" layoutX="31.0" layoutY="568.0" onMouseClicked="#handleTextSelect" prefHeight="27.0" prefWidth="514.0" AnchorPane.leftAnchor="28.0" AnchorPane.rightAnchor="74.0" />
-      <Label fx:id="labelPrivateKey2" layoutX="33.0" layoutY="610.0" text="Private Key Encoded (hex)" />
-      <TextField fx:id="textPrivateKeyHexEnc" editable="false" layoutX="31.0" layoutY="627.0" onMouseClicked="#handleTextSelect" prefHeight="27.0" prefWidth="514.0" AnchorPane.leftAnchor="28.0" AnchorPane.rightAnchor="74.0" />
-      <Button id="1" fx:id="buttonClipPubKeyHex" layoutX="556.0" layoutY="502.0" mnemonicParsing="false" onAction="#handleButtonClipText" text="Copy" AnchorPane.rightAnchor="14.5" />
-      <Button id="2" fx:id="buttonClipPrivKey" layoutX="556.0" layoutY="566.0" mnemonicParsing="false" onAction="#handleButtonClipText" text="Copy" AnchorPane.rightAnchor="14.5" />
-      <Button id="3" fx:id="buttonClipPrivKeyHex" layoutX="556.0" layoutY="625.0" mnemonicParsing="false" onAction="#handleButtonClipText" text="Copy" AnchorPane.rightAnchor="14.5" />
-      <Label fx:id="labelPrivateKeyDER" layoutX="32.0" layoutY="671.0" text="Non DER Encoded (hex)" />
-      <TextField fx:id="textNotDER" editable="false" layoutX="30.0" layoutY="688.0" onMouseClicked="#handleTextSelect" prefHeight="27.0" prefWidth="514.0" AnchorPane.leftAnchor="28.0" AnchorPane.rightAnchor="74.0" />
-      <Button id="6" fx:id="buttonClipNotDER" layoutX="555.0" layoutY="686.0" mnemonicParsing="false" onAction="#handleButtonClipText" text="Copy" AnchorPane.rightAnchor="14.5" />
-   </children>
+      <Label fx:id="labelPublicKey" layoutX="31.0" layoutY="483.0" text="Public Key (hex)" />
+      <TextField fx:id="textPublicKeyHex" editable="false" layoutX="28.0" layoutY="500.0" onMouseClicked="#handleTextSelect" prefHeight="27.0" prefWidth="514.0" AnchorPane.leftAnchor="28.0" AnchorPane.rightAnchor="74.0" />
+      <Label fx:id="labelPublicKey2" layoutX="33.0" layoutY="539.0" text="Public Key Encoded (hex)" />
+      <TextField fx:id="textPublicKeyHexEnc" editable="false" layoutX="28.0" layoutY="556.0" onMouseClicked="#handleTextSelect" prefHeight="27.0" prefWidth="514.0" AnchorPane.leftAnchor="28.0" AnchorPane.rightAnchor="74.0" />
+      <Label fx:id="labelPrivateKey" layoutX="33.0" layoutY="605.0" text="Private Key (hex)" />
+      <TextField fx:id="textPrivateKeyHex" editable="false" layoutX="28.0" layoutY="622.0" onMouseClicked="#handleTextSelect" prefHeight="27.0" prefWidth="514.0" AnchorPane.leftAnchor="28.0" AnchorPane.rightAnchor="74.0" />
+      <Label fx:id="labelPrivateKey2" layoutX="33.0" layoutY="664.0" text="Private Key Encoded (hex)" />
+      <TextField fx:id="textPrivateKeyHexEnc" editable="false" layoutX="28.0" layoutY="681.0" onMouseClicked="#handleTextSelect" prefHeight="27.0" prefWidth="514.0" AnchorPane.leftAnchor="28.0" AnchorPane.rightAnchor="74.0" />
+      <Label fx:id="labelPrivateKeyDER" layoutX="32.0" layoutY="725.0" text="Non DER Encoded (hex)" />
+      <TextField fx:id="textNotDER" editable="false" layoutX="28.0" layoutY="742.0" onMouseClicked="#handleTextSelect" prefHeight="27.0" prefWidth="514.0" AnchorPane.leftAnchor="28.0" AnchorPane.rightAnchor="74.0" />
+      <Button id="0" fx:id="buttonClipPubKey" layoutX="692.0" layoutY="500.0" mnemonicParsing="false" onAction="#handleButtonClipText" text="Copy" />
+      <Button id="1" fx:id="buttonClipPubKeyHex" layoutX="691.5" layoutY="556.0" mnemonicParsing="false" onAction="#handleButtonClipText" text="Copy" AnchorPane.rightAnchor="14.5" />
+      <Button id="2" fx:id="buttonClipPrivKey" layoutX="691.5" layoutY="620.0" mnemonicParsing="false" onAction="#handleButtonClipText" text="Copy" AnchorPane.rightAnchor="14.5" />
+      <Button id="3" fx:id="buttonClipPrivKeyHex" layoutX="691.5" layoutY="679.0" mnemonicParsing="false" onAction="#handleButtonClipText" text="Copy" AnchorPane.rightAnchor="14.5" />
+   		<Button id="6" fx:id="buttonClipNotDER" layoutX="691.5" layoutY="740.0" mnemonicParsing="false" onAction="#handleButtonClipText" text="Copy" AnchorPane.rightAnchor="14.5" />
+      </children>
 </AnchorPane>

@@ -4,7 +4,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 
 public interface KeyPair {
-    byte[] getPrivateKeyBytes();
+	byte[] getPrivateKeyBytes();
     byte[] getPublicKeyBytes();
     byte[] signMessage(byte[] message);
     boolean verifySignature(byte[] message, byte[] signature);

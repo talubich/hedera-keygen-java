@@ -8,9 +8,10 @@ public class EDKeyChain implements KeyChain {
     }
 
     @Override
-    public KeyPair keyAtIndex(long index) {
+    public KeyPair keyAtIndex(int index) {
         byte[] edSeed = CryptoUtils.deriveKey(hgcSeed.toBytes(), index, 32);
         EDKeyPair pair = new EDKeyPair(edSeed);
         return pair;
     }
 }
+

@@ -19,7 +19,7 @@ import net.i2p.crypto.eddsa.spec.EdDSAPublicKeySpec;
 
 public final class KeyGen {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		String seed = "";
 		int index = -1;
 		String wordList = "";
